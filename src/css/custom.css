@@ -1,0 +1,37 @@
+/* Global CSS for the site. Overrides Infima variables. */
+
+:root {
+  /* Brand primary */
+  --ifm-color-primary: #7856ff;
+
+  /* Darker variants (20%, 35%, 50% darker) */
+  --ifm-color-primary-dark: #5f48e6;
+  --ifm-color-primary-darker: #4837b0;
+  --ifm-color-primary-darkest: #332883;
+
+  /* Lighter variants (15%, 35%, 55% lighter) */
+  --ifm-color-primary-light: #8f7bff;
+  --ifm-color-primary-lighter: #a899ff;
+  --ifm-color-primary-lightest: #c6c1ff;
+
+  /* Light-mode defaults */
+  --ifm-background-color: #ffffff;
+  --ifm-font-color-base: #0a112f;
+  --docusaurus-highlighted-code-line-bg: rgba(120, 86, 255, 0.08);
+}
+
+/* Dark theme overrides */
+[data-theme='dark'] {
+  --ifm-color-primary: #7856ff;
+  --ifm-color-primary-dark: #5f48e6;
+  --ifm-color-primary-darker: #4837b0;
+  --ifm-color-primary-darkest: #332883;
+  --ifm-color-primary-light: #8f7bff;
+  --ifm-color-primary-lighter: #a899ff;
+  --ifm-color-primary-lightest: #c6c1ff;
+
+  /* Enforced dark background and readable text */
+  --ifm-background-color: #0a112f;
+  --ifm-font-color-base: #ffffff;
+  --docusaurus-highlighted-code-line-bg: rgba(120, 86, 255, 0.22);
+}

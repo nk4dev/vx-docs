@@ -1,0 +1,15 @@
+yangshun:
+  name: Nknight AMAMIYA
+  title: Ex-Meta Staff Engineer, Co-founder GreatFrontEnd
+  url: https://nknighta.me
+  image_url: https://github.com/yangshun.png
+  page: true
+  socials:
+    x: nk4dev
+    github: nk4dev
+    newsletter: https://www.greatfrontend.com
+slorber:
+  name: Slorber
+  title: Community Contributor
+  page: false
+  socials: {}
