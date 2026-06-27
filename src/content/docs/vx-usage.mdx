@@ -1,11 +1,11 @@
 ---
-title: nk4dev/vx User Guide
-description: The quickest way to learn the basics of using @nk4dev/vx.
+title: vx3 User Guide
+description: The quickest way to learn the basics of using vx3.
 ---
 
-# nk4dev/vx User Guide
+# vx3 User Guide
 
-This page provides the quickest way to learn the basics of using `@nk4dev/vx`.
+This page provides the quickest way to learn the basics of using `vx3`.
 
 ## Overview
 
@@ -28,13 +28,13 @@ This page provides the quickest way to learn the basics of using `@nk4dev/vx`.
 ### Using as a global CLI
 
 ```bash
-npm install -g @nk4dev/vx
+npm install -g vx3
 ```
 
 ### Add as a dependency to your project
 
 ```bash
-npm install @nk4dev/vx
+npm install vx3
 ```
 
 ### One-off execution (no installation required)
@@ -65,7 +65,7 @@ vx3 pay 0xRecipientAddress 0.01 --rpc http://127.0.0.1:8545
 ### TypeScript / ESM
 
 ```ts
-import vx from '@nk4dev/vx';
+import vx from 'vx3';
 
 const rpc = vx.getRpcUrl();
 const block = await vx.getBlockNumber(rpc);
@@ -75,14 +75,14 @@ const gas = await vx.getGasFees(rpc);
 ### CommonJS
 
 ```js
-const vx = require('@nk4dev/vx').default;
+const vx = require('vx3').default;
 vx.getGasFees('http://127.0.0.1:8545').then(console.log);
 ```
 
 ## Sending Payments Programmatically
 
 ```ts
-import vx from '@nk4dev/vx';
+import vx from 'vx3';
 
 await vx.payment.sendPayment({
 rpcUrl: 'http://127.0.0.1:8545',
