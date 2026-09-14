@@ -1,0 +1,30 @@
+---
+title: SDK basics
+description: Reading RPC, block number, and gas fees from code.
+---
+
+# SDK basics
+
+### TypeScript / ESM
+
+```ts
+import vx from 'vx3';
+
+const rpc = vx.getRpcUrl();
+const block = await vx.getBlockNumber(rpc);
+const gas = await vx.getGasFees(rpc);
+```
+
+### CommonJS
+
+```js
+const vx = require('vx3').default;
+vx.getGasFees('http://127.0.0.1:8545').then(console.log);
+```
+
+`getRpcUrl()` reads the RPC configured via [`vx3 rpc init`](/docs/commands/rpc) — it throws if `vx.config.json` doesn't exist yet.
+
+## See also
+
+- [API overview](/docs/api)
+- [`vx3 gas`](/docs/commands/gas) — the CLI equivalent of `getGasFees()`.

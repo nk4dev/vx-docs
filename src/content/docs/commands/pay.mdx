@@ -1,0 +1,28 @@
+---
+title: pay
+description: Send a transaction from the command line.
+---
+
+# `vx3 pay`
+
+Send a transaction: `vx3 pay <to> <amount> [--rpc <url>] [--key <privateKey>] [--json]`.
+
+The private key is read from the `PRIVATE_KEY` environment variable by default. Passing `--key` directly works too, but is discouraged — it can leak via shell history and process listings.
+
+```bash
+# bash / zsh
+export PRIVATE_KEY='0x...'
+vx3 pay 0xRecipientAddress 0.01 --rpc http://127.0.0.1:8545
+```
+
+```powershell
+# PowerShell
+$env:PRIVATE_KEY='0x...'
+vx3 pay 0xRecipientAddress 0.01 --rpc http://127.0.0.1:8545
+```
+
+## See also
+
+- [Commands overview](/docs/commands)
+- [Sending payments programmatically](/docs/api/payments) — the equivalent SDK call.
+- [`vx3 rpc`](/docs/commands/rpc) — configure the default RPC.

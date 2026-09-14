@@ -1,0 +1,29 @@
+---
+title: init & create
+description: Scaffold a new vx3 project.
+---
+
+# `vx3 init` / `vx3 create`
+
+## `vx3 init [name]`
+
+Initialize a new project with default settings in the current directory, or in a new `name` subdirectory when given.
+
+```bash
+vx3 init
+vx3 init my-app
+```
+
+## `vx3 create [name]`
+
+Scaffold a new project. Behaves like `vx3 init` when `name` is given; runs an interactive prompt when it's omitted.
+
+```bash
+vx3 create
+vx3 create my-app
+```
+
+## See also
+
+- [Commands overview](/docs/commands)
+- [`vx3 setup`](/docs/commands/setup) — add Hardhat or a React frontend to an existing project.

@@ -1,0 +1,26 @@
+---
+title: NFT minting
+description: Minting NFTs programmatically with vx.mintNFT().
+---
+
+# Minting NFTs programmatically
+
+```ts
+import vx from 'vx3';
+
+await vx.mintNFT({
+  rpcUrl: 'http://127.0.0.1:8545',
+  privateKey: process.env.PRIVATE_KEY!,
+  contractAddress: '0xContractAddress',
+  to: '0xRecipientAddress',
+  tokenURI: 'ipfs://...',
+});
+```
+
+By default this resolves to a `mint`/`safeMint`-style call based on whether `tokenId` and/or `tokenURI` are given; pass `functionName` to target a custom function, and `abi` to override the ABI used.
+
+## See also
+
+- [API overview](/docs/api)
+- [`vx3 nft mint`](/docs/commands/nft) — the CLI equivalent.
+- [`vx3 ipfs`](/docs/commands/ipfs) — pin metadata before passing it as `tokenURI`.

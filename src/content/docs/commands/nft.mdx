@@ -1,0 +1,24 @@
+---
+title: nft mint
+description: Mint an NFT from the command line.
+---
+
+# `vx3 nft mint`
+
+Mint an NFT: `vx3 nft mint <contractAddress> [--to <address>] [--id <tokenId>] [--uri <tokenURI>] [--fn <functionName>] [--rpc <url>] [--key <privateKey>] [--json]`.
+
+```bash
+export PRIVATE_KEY='0x...'
+vx3 nft mint 0xContractAddress \
+  --to 0xRecipientAddress \
+  --uri ipfs://... \
+  --rpc http://127.0.0.1:8545
+```
+
+By default it calls a standard `mint`/`safeMint`-style function on the target contract; pass `--fn` to call a custom function name instead.
+
+## See also
+
+- [Commands overview](/docs/commands)
+- [Minting NFTs programmatically](/docs/api/nft-minting) — the equivalent SDK call.
+- [`vx3 ipfs`](/docs/commands/ipfs) — pin metadata before passing it as `--uri`.
