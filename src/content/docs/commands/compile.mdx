@@ -1,0 +1,22 @@
+---
+title: compile
+description: Compile Solidity with the VXC custom compiler.
+---
+
+# `vx3 compile`
+
+Compile Solidity using the VXC custom compiler.
+
+```bash
+vx3 compile contracts/Token.sol \
+  --out build \
+  --optimize --runs 1000 \
+  --evm cancun \
+  --remap @openzeppelin/=node_modules/@openzeppelin/
+```
+
+Artifacts (`<Contract>.json` + `vxc.manifest.json`) are written to `--out` and are deploy-ready.
+
+## See also
+
+- [Commands overview](/docs/commands)

@@ -1,0 +1,36 @@
+---
+title: React components & hooks
+description: The bundled <Payment /> component, usePayment, usePaymentStatus, and usePaymentDialog.
+---
+
+# React components & hooks
+
+`vx3` ships a ready-made `<Payment />` component plus hooks, generated into your project by [`vx3 setup react`](/docs/commands/setup) or [`vx3 generate`](/docs/commands/generate):
+
+```tsx
+import { Payment } from 'vx3';
+
+<Payment
+  to="0xRecipientAddress"
+  amount="0.01"
+  mode="wallet" // "wallet" uses window.ethereum, "api" posts to /api/pay
+  onSuccess={(result) => console.log(result.txHash)}
+  onError={(error) => console.error(error)}
+/>;
+```
+
+For custom UI, use the underlying hooks directly:
+
+```tsx
+import { usePayment, usePaymentStatus, usePaymentDialog } from 'vx3';
+
+const { pay, state } = usePayment();
+await pay({ to: '0xRecipientAddress', amount: '0.01', mode: 'wallet' });
+```
+
+`usePaymentStatus` exposes the current `idle | pending | success | error` lifecycle state, and `usePaymentDialog` returns `{ isOpen, open, close, toggle }` for wiring up a payment modal.
+
+## See also
+
+- [API overview](/docs/api)
+- [Payments](/docs/api/payments) — the underlying `sendPayment()` call this component wraps.

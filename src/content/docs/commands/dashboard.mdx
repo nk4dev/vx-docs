@@ -1,0 +1,33 @@
+---
+title: dash
+description: Open the real-time developer dashboard.
+---
+
+# `vx3 dash`
+
+Open the real-time developer dashboard.
+
+```bash
+vx3 dash                   # http://127.0.0.1:4000
+vx3 dash --port 5000       # custom port
+vx3 dash --host 0.0.0.0    # bind to all interfaces
+vx3 dash --open            # auto-open in browser
+```
+
+> **Note:** `--host 0.0.0.0` exposes the dashboard's `/api/*` endpoints to your whole network. There is no authentication, so only do this on a trusted network.
+
+## Dashboard endpoints
+
+| Endpoint | Method | Description |
+| --- | --- | --- |
+| `/` | GET | Dashboard HTML |
+| `/api/status` | GET | Server + RPC status |
+| `/api/block` | GET | Latest block number |
+| `/api/gas` | GET | EIP-1559 gas fee data |
+| `/api/rpc` | GET | RPC config list |
+| `/events` | GET | SSE stream (block + gas, every 4s) |
+
+## See also
+
+- [Commands overview](/docs/commands)
+- [`vx3 api`](/docs/commands/api-server) — the lighter-weight alternative these endpoints are based on.

@@ -1,0 +1,23 @@
+---
+title: api
+description: Start the local helper API server.
+---
+
+# `vx3 api`
+
+Start the local helper API server. It does **not** run an EVM — `/api/block`, `/api/gas`, and `/api/pay` proxy to the RPC configured in `vx.config.json`. `vx3 node` is a deprecated alias.
+
+```bash
+vx3 api                    # http://127.0.0.1:8545
+vx3 api --port 8000
+vx3 api --host 0.0.0.0
+vx3 api --debug            # serves a debug page at /debug
+```
+
+On startup it prints 10 deterministic dev accounts derived from Hardhat's public `test test ... junk` mnemonic — convenient for local testing, but only funded if the RPC you point it at is itself a fresh local node. **Never use these keys on a public network.**
+
+## See also
+
+- [Commands overview](/docs/commands)
+- [`vx3 rpc`](/docs/commands/rpc) — configure the RPC this server proxies to.
+- [`vx3 dash`](/docs/commands/dashboard) — a richer, real-time alternative.

@@ -1,0 +1,23 @@
+---
+title: Payments
+description: Sending payments programmatically with vx.payment.sendPayment().
+---
+
+# Sending payments programmatically
+
+```ts
+import vx from 'vx3';
+
+await vx.payment.sendPayment({
+  rpcUrl: 'http://127.0.0.1:8545',
+  privateKey: process.env.PRIVATE_KEY!,
+  to: '0xRecipientAddress',
+  amountEth: '0.01',
+});
+```
+
+## See also
+
+- [API overview](/docs/api)
+- [`vx3 pay`](/docs/commands/pay) — the CLI equivalent.
+- [React components & hooks](/docs/api/react-components) — a ready-made `<Payment />` UI built on this.

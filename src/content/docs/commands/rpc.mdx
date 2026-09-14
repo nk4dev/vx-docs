@@ -1,0 +1,19 @@
+---
+title: rpc
+description: Manage RPC endpoints in vx.config.json.
+---
+
+# `vx3 rpc`
+
+Manage or query RPC endpoints from `vx.config.json`.
+
+```bash
+vx3 rpc init   # create a starter vx.config.json
+vx3 rpc list   # show the configured RPC URL
+```
+
+## See also
+
+- [Commands overview](/docs/commands)
+- [`vx3 api`](/docs/commands/api-server) and [`vx3 dash`](/docs/commands/dashboard) — both proxy to this RPC.
+- [`vx3 pay`](/docs/commands/pay) and [`vx3 gas`](/docs/commands/gas) — default to this RPC when `--rpc` is omitted.
