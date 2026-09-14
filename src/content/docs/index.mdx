@@ -1,48 +1,71 @@
 ---
-title: Tutorial Intro
+title: Introduction
 description: Let's discover VX SDK in less than 5 minutes.
 ---
 
-# Tutorial Intro
+# Introduction
 
-Let's discover **Docusaurus in less than 5 minutes**.
+`vx3` is a developer-first toolkit for building, testing, and shipping Web3 applications. It works as a CLI and as an SDK you can import into your own code, and bundles:
 
-## Getting Started
+- Multi-chain support (ethers.js v6)
+- A local helper API server for block/gas/payment proxying
+- A real-time developer dashboard (`vx3 dash`)
+- **VXC**, an in-house custom Solidity compiler
+- Payment and NFT-minting helpers, with a ready-made React component and hooks
+- Hardhat, React, and Vue project scaffolding
+- IPFS pin/fetch helpers
+- RPC endpoint management
 
-Get started by **creating a new site**.
+## What you'll need
 
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
+- [Node.js](https://nodejs.org/en/download/) version 18 or above
+- npm / pnpm / yarn / bun (any one of them)
 
-### What you'll need
-
-- [Node.js](https://nodejs.org/en/download/) version 20.0 or above:
-  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
-
-## Generate a new site
-
-Generate a new Docusaurus site using the **classic template**.
-
-The classic template will automatically be added to your project after you run the command:
-
-```bash
-npm init docusaurus@latest my-website classic
-```
-
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
-
-The command also installs all necessary dependencies you need to run Docusaurus.
-
-## Start your site
-
-Run the development server:
+## Install
 
 ```bash
-cd my-website
-npm run start
+npm install -g vx3
 ```
 
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
+You can also add it as a project dependency (`npm install vx3`) or run it without installing via `npx vx3 <command>`.
 
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
+To build from source instead:
 
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
+```bash
+git clone https://github.com/nk4dev/vx
+cd vx
+bun i
+bun run build
+bun link        # exposes the `vx3` binary globally
+```
+
+## Try it out
+
+Scaffold a new project and configure an RPC endpoint:
+
+```bash
+vx3 create
+vx3 rpc init
+```
+
+Start the local helper API server:
+
+```bash
+vx3 api --debug
+```
+
+Or open the real-time developer dashboard instead:
+
+```bash
+vx3 dash --open
+```
+
+Check current gas fees on your configured RPC:
+
+```bash
+vx3 gas
+```
+
+## Next steps
+
+Head over to the [Command Reference](/docs/commands) for the full CLI, or the [API Reference](/docs/api) for SDK usage from TypeScript/CommonJS, sending payments and minting NFTs programmatically, and using the bundled React components.

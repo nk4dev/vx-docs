@@ -10,8 +10,13 @@ export const pageTree: PageTree.Root = {
     },
     {
       type: 'page',
-      name: 'vx3 User Guide',
-      url: '/docs/vx-usage',
+      name: 'Commands',
+      url: '/docs/commands',
+    },
+    {
+      type: 'page',
+      name: 'API',
+      url: '/docs/api',
     },
   ],
 }

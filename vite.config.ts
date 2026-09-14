@@ -5,6 +5,7 @@ import tailwindcss from '@tailwindcss/vite'
 import mdx from '@mdx-js/rollup'
 import remarkFrontmatter from 'remark-frontmatter'
 import remarkMdxFrontmatter from 'remark-mdx-frontmatter'
+import remarkGfm from 'remark-gfm'
 
 function shim(rel: string) {
   return fileURLToPath(new URL(rel, import.meta.url))
@@ -13,7 +14,7 @@ function shim(rel: string) {
 export default defineConfig({
   plugins: [
     tailwindcss(),
-    { enforce: 'pre', ...mdx({ remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter] }) },
+    { enforce: 'pre', ...mdx({ remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter, remarkGfm] }) },
     react(),
   ],
   resolve: {
