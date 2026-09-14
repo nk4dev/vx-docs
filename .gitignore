@@ -4,6 +4,9 @@
 # Build output
 /dist
 
+# Generated at build/dev time by scripts/build-search-index.ts
+/src/generated
+
 # Misc
 .DS_Store
 .env.local

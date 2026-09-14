@@ -4,7 +4,10 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
+		"build:search": "bun run scripts/build-search-index.ts",
+		"predev": "bun run build:search",
 		"dev": "vite",
+		"prebuild": "bun run build:search",
 		"build": "tsc -b && vite build",
 		"preview": "vite preview",
 		"pages:preview": "wrangler pages dev ./dist",
