@@ -1,41 +1,47 @@
-# Website
+# VX SDK Docs
 
-This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
+This website is the documentation site for `vx3`, built with [Vite](https://vitejs.dev/), [React](https://react.dev/), and [Fumadocs](https://fumadocs.dev/).
 
 ## Installation
 
 ```bash
-yarn
+bun install
 ```
 
 ## Local Development
 
 ```bash
-yarn start
+bun run dev
 ```
 
-This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
+This command starts a local development server. Most changes are reflected live without having to restart the server.
 
 ## Build
 
 ```bash
-yarn build
+bun run build
 ```
 
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
+This command type-checks the project and generates static content into the `dist` directory, which can be served using any static content hosting service.
+
+## Preview
+
+```bash
+bun run preview
+```
+
+Serves the production build from `dist` locally.
+
+```bash
+bun run pages:preview
+```
+
+Serves the production build from `dist` via `wrangler pages dev`, matching the Cloudflare Pages runtime.
 
 ## Deployment
 
-Using SSH:
-
 ```bash
-USE_SSH=true yarn deploy
+bun run deploy
 ```
 
-Not using SSH:
-
-```bash
-GIT_USER=<Your GitHub username> yarn deploy
-```
-
-If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
+Builds the site and deploys it to Cloudflare Pages via `wrangler pages deploy`.

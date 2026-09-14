@@ -7,24 +7,24 @@ const features = [
     description: 'Built on ethers.js v6. Connect to any EVM-compatible network with a unified API.',
   },
   {
-    title: 'Wallet Management',
-    description: 'Create, import, and manage wallets. Send payments programmatically with a single call.',
+    title: 'Payments & NFTs',
+    description: 'Send transactions and mint NFTs from the CLI, the SDK, or a bundled React component.',
   },
   {
-    title: 'Local Dev Server',
-    description: 'Spin up a local blockchain environment instantly for rapid iteration.',
+    title: 'Real-time Dashboard',
+    description: 'vx3 dash opens a live dev dashboard with block number, gas fees, RPC status, and an SSE activity log.',
   },
   {
-    title: 'Hardhat Integration',
-    description: 'One-command Hardhat project scaffolding with sensible defaults.',
+    title: 'VXC Compiler',
+    description: 'An in-house custom Solidity compiler with optimizer, EVM version targeting, and import remapping.',
   },
   {
-    title: 'Gas & RPC Tools',
-    description: 'Query live gas fees and manage RPC endpoints across networks.',
+    title: 'Hardhat, React & Vue',
+    description: 'One-command scaffolding for a Hardhat toolchain or a React/Vue frontend.',
   },
   {
-    title: 'React Components',
-    description: 'Generate ready-to-use React/Next.js payment components via CLI.',
+    title: 'Gas, RPC & IPFS Tools',
+    description: 'Query live gas fees, manage RPC endpoints, and pin/fetch content via IPFS.',
   },
 ]
 
@@ -44,8 +44,8 @@ export default function HomePage() {
           <span className="text-fd-primary">vx3</span>
         </h1>
         <p className="max-w-xl text-lg text-fd-muted-foreground">
-          A toolkit for Web3 development — multi-chain support, wallet management,
-          local dev server, and more. Works as a CLI or SDK.
+          A toolkit for Web3 development — multi-chain support, a real-time dev
+          dashboard, the VXC Solidity compiler, and more. Works as a CLI or SDK.
         </p>
         <div className="flex flex-wrap items-center justify-center gap-3 mt-2">
           <Link
@@ -55,10 +55,16 @@ export default function HomePage() {
             Get Started →
           </Link>
           <Link
-            to="/docs/vx-usage"
+            to="/docs/commands"
             className="inline-flex items-center rounded-md border border-fd-border px-5 py-2.5 text-sm font-semibold text-fd-foreground hover:bg-fd-accent transition-colors"
           >
-            User Guide
+            Commands
+          </Link>
+          <Link
+            to="/docs/api"
+            className="inline-flex items-center rounded-md border border-fd-border px-5 py-2.5 text-sm font-semibold text-fd-foreground hover:bg-fd-accent transition-colors"
+          >
+            API
           </Link>
         </div>
       </section>
