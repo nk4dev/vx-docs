@@ -8,7 +8,7 @@ description: Minting NFTs programmatically with vx.mintNFT().
 ```ts
 import vx from 'vx3';
 
-await vx.mintNFT({
+const { txHash, receipt } = await vx.mintNFT({
   rpcUrl: 'http://127.0.0.1:8545',
   privateKey: process.env.PRIVATE_KEY!,
   contractAddress: '0xContractAddress',
@@ -17,10 +17,34 @@ await vx.mintNFT({
 });
 ```
 
-By default this resolves to a `mint`/`safeMint`-style call based on whether `tokenId` and/or `tokenURI` are given; pass `functionName` to target a custom function, and `abi` to override the ABI used.
+## Options
+
+| Option | Type | Description |
+| --- | --- | --- |
+| `rpcUrl` | `string` | **Required.** RPC endpoint. |
+| `privateKey` | `string` | **Required.** Hex private key of the signer. |
+| `contractAddress` | `string` | **Required.** The NFT contract. |
+| `to` | `string` | Recipient. Defaults to the signer's address. |
+| `tokenId` | `number \| bigint` | For `mint(address,uint256)`-style contracts. |
+| `tokenURI` | `string` | For `safeMint(address,string)`-style contracts. |
+| `functionName` | `string` | Call a custom function; `to`, then `tokenId` / `tokenURI` (when given) are its arguments. |
+| `abi` | `string[]` | Human-readable ABI fragments overriding the default ERC-721 signatures. |
+| `gasLimit` | `number` | Optional. |
+| `maxFeePerGas`, `maxPriorityFeePerGas` | `string` | Optional, in gwei. |
+
+## Which function is called
+
+Without `functionName`, the call is chosen from the options you pass:
+
+- `tokenURI` only → `safeMint(address,string)`
+- `tokenId` only → `mint(address,uint256)`
+- both → throws: the default ABI has no `(address,uint256,string)` overload. Provide only one, or use `functionName` with a custom `abi`.
+- neither → throws.
+
+The promise resolves after one confirmation with `{ txHash, receipt }`.
 
 ## See also
 
 - [API overview](/docs/api)
 - [`vx3 nft mint`](/docs/commands/nft) — the CLI equivalent.
-- [`vx3 ipfs`](/docs/commands/ipfs) — pin metadata before passing it as `tokenURI`.
+- [`vx3 ipfs`](/docs/commands/ipfs) — fetch metadata behind an `ipfs://` URI.

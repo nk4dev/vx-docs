@@ -1,18 +1,23 @@
 ---
 title: ipfs
-description: Pin and fetch content via IPFS.
+description: Fetch content from IPFS.
 ---
 
 # `vx3 ipfs`
 
-Pin / fetch content via IPFS.
+Fetch content by CID: `vx3 ipfs fetch <cid> [gatewayUrl]`. `fetch` is the only subcommand.
 
 ```bash
 vx3 ipfs fetch <cid>
-vx3 ipfs fetch <cid> <gatewayUrl>
+vx3 ipfs fetch <cid> https://ipfs.io
 ```
+
+When `gatewayUrl` is omitted, the gateway is taken from the `"type": "ipfs"` entry in `vx.config.json` (its `gateway` URL, or else its `api` host/port/protocol). `vx3 rpc init` writes a default entry pointing at `https://ipfs.io`.
+
+Text and JSON responses are printed as-is; binary content prints only its size in bytes.
 
 ## See also
 
 - [Commands overview](/docs/commands)
+- [`vx3 rpc`](/docs/commands/rpc) — `vx.config.json` format, including IPFS entries.
 - [Minting NFTs](/docs/api/nft-minting) — `tokenURI` values are commonly `ipfs://` CIDs.

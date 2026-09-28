@@ -5,7 +5,7 @@ description: Mint an NFT from the command line.
 
 # `vx3 nft mint`
 
-Mint an NFT: `vx3 nft mint <contractAddress> [--to <address>] [--id <tokenId>] [--uri <tokenURI>] [--fn <functionName>] [--rpc <url>] [--key <privateKey>] [--json]`.
+Mint an NFT: `vx3 nft mint <contractAddress> [--to <address>] [--id <tokenId>] [--uri <tokenURI>] [--fn <functionName>] [--rpc <url>] [--key <privateKey>] [--json]`. `mint` is the only subcommand.
 
 ```bash
 export PRIVATE_KEY='0x...'
@@ -15,10 +15,25 @@ vx3 nft mint 0xContractAddress \
   --rpc http://127.0.0.1:8545
 ```
 
-By default it calls a standard `mint`/`safeMint`-style function on the target contract; pass `--fn` to call a custom function name instead.
+`--to` defaults to the signer's own address. `--rpc` / `--key` (short: `-r` / `-k`) behave as in [`vx3 pay`](/docs/commands/pay): the RPC falls back to `vx.config.json`, and the key falls back to `PRIVATE_KEY`.
+
+## Choosing the mint function
+
+The default ABI covers common ERC-721 signatures, chosen from the flags you pass:
+
+| Flags | Calls |
+| --- | --- |
+| `--uri` only | `safeMint(address,string)` |
+| `--id` only | `mint(address,uint256)` |
+| `--id` and `--uri` | Error — the default ABI has no `(address,uint256,string)` overload. |
+| neither | Error — provide one of them. |
+
+Pass `--fn <name>` to call a custom function instead; `to`, then `--id` and `--uri` (when given) are passed as its arguments in that order. Custom ABIs are only available from the [SDK](/docs/api/nft-minting).
+
+With `--json`, prints `{ "txHash", "blockNumber" }` (or `{ "error" }`).
 
 ## See also
 
 - [Commands overview](/docs/commands)
 - [Minting NFTs programmatically](/docs/api/nft-minting) — the equivalent SDK call.
-- [`vx3 ipfs`](/docs/commands/ipfs) — pin metadata before passing it as `--uri`.
+- [`vx3 ipfs`](/docs/commands/ipfs) — fetch metadata behind an `ipfs://` URI.
