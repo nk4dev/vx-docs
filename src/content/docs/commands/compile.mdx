@@ -5,7 +5,7 @@ description: Compile Solidity with the VXC custom compiler.
 
 # `vx3 compile`
 
-Compile Solidity using the VXC custom compiler.
+Compile Solidity using the VXC custom compiler: `vx3 compile <entry.sol> [options]`.
 
 ```bash
 vx3 compile contracts/Token.sol \
@@ -15,7 +15,17 @@ vx3 compile contracts/Token.sol \
   --remap @openzeppelin/=node_modules/@openzeppelin/
 ```
 
-Artifacts (`<Contract>.json` + `vxc.manifest.json`) are written to `--out` and are deploy-ready.
+| Option | Default | Description |
+| --- | --- | --- |
+| `-o, --out <dir>` | `artifacts/vxc` | Output directory. |
+| `--optimize` | off | Enable the optimizer. |
+| `--runs <n>` | `200` | Optimizer runs. |
+| `--evm <version>` | compiler default | Target EVM version (e.g. `cancun`). |
+| `--base <dir>` | current directory | Base path for import resolution. |
+| `--metadata` | off | Emit Solidity metadata. |
+| `--remap k=v` | — | Add an import remapping (repeatable). |
+
+Artifacts (`<Contract>.json` + `vxc.manifest.json`) are written to `--out` and are deploy-ready. Warnings are printed to stderr; the command exits with code `1` if any compile error is reported.
 
 ## See also
 

@@ -5,9 +5,15 @@ description: Send a transaction from the command line.
 
 # `vx3 pay`
 
-Send a transaction: `vx3 pay <to> <amount> [--rpc <url>] [--key <privateKey>] [--json]`.
+Send ETH: `vx3 pay <to> <amount> [--rpc <url>] [--key <privateKey>] [--json]`. `<amount>` is in ETH (e.g. `0.01`). Without `--rpc`, the first RPC in `vx.config.json` is used.
 
-The private key is read from the `PRIVATE_KEY` environment variable by default. Passing `--key` directly works too, but is discouraged — it can leak via shell history and process listings.
+| Flag | Description |
+| --- | --- |
+| `-r, --rpc <url>` | RPC endpoint to send through. |
+| `-k, --key <privateKey>` | Private key. Discouraged — see below. |
+| `--json` | Print `{ "txHash", "blockNumber" }` (or `{ "error" }`) instead of text. |
+
+The private key is read from the `PRIVATE_KEY` environment variable by default. Passing `--key` directly works too, but prints a warning — it can leak via shell history and process listings.
 
 ```bash
 # bash / zsh
@@ -20,6 +26,8 @@ vx3 pay 0xRecipientAddress 0.01 --rpc http://127.0.0.1:8545
 $env:PRIVATE_KEY='0x...'
 vx3 pay 0xRecipientAddress 0.01 --rpc http://127.0.0.1:8545
 ```
+
+The command waits for one confirmation and prints the transaction hash and block number.
 
 ## See also
 

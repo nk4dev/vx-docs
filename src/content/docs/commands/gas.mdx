@@ -5,13 +5,15 @@ description: Estimate current gas fees.
 
 # `vx3 gas`
 
-Estimate gas fees for a transaction. Flags: `--rpc`, `--path`, `--json`.
+Fetch current gas fee data from an RPC endpoint: `vx3 gas [--rpc <url>] [--json]`. Without `--rpc`, the first RPC in `vx.config.json` is used.
 
 ```bash
 vx3 gas
 vx3 gas --rpc http://127.0.0.1:8545
 vx3 gas --json
 ```
+
+Prints `baseFeePerGas`, `maxPriorityFee`, `maxFeePerGas`, and the legacy `gasPrice` in gwei (`n/a` when the network doesn't report a value). With `--json`, prints `{ "rpc": "...", ...fees }` using the same shape as [`getGasFees()`](/docs/api/sdk-basics#getgasfees), or `{ "error": "..." }` and exit code `1` on failure.
 
 ## See also
 

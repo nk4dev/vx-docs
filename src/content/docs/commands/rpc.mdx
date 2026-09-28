@@ -5,12 +5,33 @@ description: Manage RPC endpoints in vx.config.json.
 
 # `vx3 rpc`
 
-Manage or query RPC endpoints from `vx.config.json`.
+Manage or query RPC endpoints from `vx.config.json` in the current directory.
 
 ```bash
 vx3 rpc init   # create a starter vx.config.json
 vx3 rpc list   # show the configured RPC URL
 ```
+
+`list` prints the first standard RPC endpoint as a URL.
+
+## `vx.config.json`
+
+The file is a JSON array of endpoints (a single object is also accepted). `vx3 rpc init` writes:
+
+```json
+[
+  { "host": "localhost", "port": 8545, "protocol": "http", "type": "rpc" },
+  { "host": "rpc.example.com", "port": 443, "protocol": "https", "type": "rpc" },
+  { "type": "ipfs", "gateway": "https://ipfs.io" }
+]
+```
+
+| Entry type | Required fields | Notes |
+| --- | --- | --- |
+| `rpc` (default) | `host`, `port`, `protocol` (`http`, `https`, `ws`, `wss`) | The **first** RPC entry is the default for `pay`, `gas`, `nft`, `api`, `dash` and `getRpcUrl()`. |
+| `ipfs` | `gateway` (URL) **or** `api` (`host`, `port`, `protocol`) | Used by [`vx3 ipfs`](/docs/commands/ipfs). |
+
+A missing, non-JSON, or invalid file produces a clear error (`vx3 rpc init` creates a new one).
 
 ## See also
 

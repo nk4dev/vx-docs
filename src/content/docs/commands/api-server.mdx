@@ -5,7 +5,7 @@ description: Start the local helper API server.
 
 # `vx3 api`
 
-Start the local helper API server. It does **not** run an EVM — `/api/block`, `/api/gas`, and `/api/pay` proxy to the RPC configured in `vx.config.json`. `vx3 node` is a deprecated alias.
+Start the local helper API server. It does **not** run an EVM — it exposes a small HTTP API that talks to the RPC configured in `vx.config.json`. `vx3 node` is a deprecated, hidden alias.
 
 ```bash
 vx3 api                    # http://127.0.0.1:8545
@@ -13,6 +13,29 @@ vx3 api --port 8000
 vx3 api --host 0.0.0.0
 vx3 api --debug            # serves a debug page at /debug
 ```
+
+| Flag | Default | Description |
+| --- | --- | --- |
+| `--host <host>` | `127.0.0.1` | Interface to bind to. |
+| `--port <port>` | `8545` | Port to listen on (falls back to `8545` if not a number). |
+| `--debug` | off | Enable the `/debug` page. |
+| `--env <name>` | `development` | Environment label shown in debug output. |
+| `--chains <json>` | — | Chain list (JSON) shown in debug output. Invalid JSON is ignored with a warning. |
+
+## Endpoints
+
+| Endpoint | Method | Description |
+| --- | --- | --- |
+| `/api` | GET | Welcome message. |
+| `/api/block` | GET | Latest block number from the configured RPC (`{ "blockNumber": n }`). |
+| `/api/accounts` | GET | The generated dev accounts (address + display balance). |
+| `/api/pay` | POST | Send a payment: body `{ "to", "amountEth", "rpcUrl"? }`. |
+| `/events` | GET | SSE stream of realtime block updates. |
+| `/debug` | GET | Debug page with an RPC selector. Only served with `--debug`, otherwise `404`. |
+
+`/api/pay` never accepts a private key in the request body. It signs with the server-side `PRIVATE_KEY` environment variable, or with dev account `(0)` when that is unset. Requests whose `Origin` header does not match the server's own origin are rejected with `403`.
+
+For gas data (`/api/gas`) and server + RPC status (`/api/status`), use [`vx3 dash`](/docs/commands/dashboard).
 
 On startup it prints 10 deterministic dev accounts derived from Hardhat's public `test test ... junk` mnemonic — convenient for local testing, but only funded if the RPC you point it at is itself a fresh local node. **Never use these keys on a public network.**
 

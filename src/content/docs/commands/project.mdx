@@ -7,12 +7,14 @@ description: Scaffold a new vx3 project.
 
 ## `vx3 init [name]`
 
-Initialize a new project with default settings in the current directory, or in a new `name` subdirectory when given.
+Create a new project directory from the bundled template. The directory is `name` inside the current directory, or `my-vx-project` when omitted. The command fails if the directory already exists.
 
 ```bash
 vx3 init
 vx3 init my-app
 ```
+
+`name` must be a plain directory name: absolute paths and `.` / `..` segments are rejected.
 
 ## `vx3 create [name]`
 

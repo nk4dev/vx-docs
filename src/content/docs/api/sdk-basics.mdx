@@ -1,6 +1,6 @@
 ---
 title: SDK basics
-description: Reading RPC, block number, and gas fees from code.
+description: Reading RPC, block number, balance, and gas fees from code.
 ---
 
 # SDK basics
@@ -12,6 +12,7 @@ import vx from 'vx3';
 
 const rpc = vx.getRpcUrl();
 const block = await vx.getBlockNumber(rpc);
+const balance = await vx.getBalance(rpc, '0xAddress');
 const gas = await vx.getGasFees(rpc);
 ```
 
@@ -22,7 +23,42 @@ const vx = require('vx3').default;
 vx.getGasFees('http://127.0.0.1:8545').then(console.log);
 ```
 
-`getRpcUrl()` reads the RPC configured via [`vx3 rpc init`](/docs/commands/rpc) — it throws if `vx.config.json` doesn't exist yet.
+`require('vx3')` also exposes the same members directly, so `const { getGasFees } = require('vx3')` works too.
+
+## Reference
+
+| Member | Description |
+| --- | --- |
+| `getRpcUrl()` | URL of the first RPC endpoint in `vx.config.json`. |
+| `instance(configPath?)` | Loads the config and returns `{ config, configs, rpcUrl }` (first endpoint, all entries, resolved URL). |
+| `getBlockNumber(rpcUrl)` | Latest block number (`Promise<number>`). |
+| `getBalance(rpcUrl, address)` | Balance in ETH as a `number`. Throws on an empty address. |
+| `getGasFees(rpcUrl)` | Current fee data — see below. |
+| `payment.sendPayment(opts)` | See [Payments](/docs/api/payments). |
+| `mintNFT(opts)` / `nft.mintNFT` | See [NFT minting](/docs/api/nft-minting). |
+| `data` (also the named export `vx`) | The namespace holding `getBlockNumber`, `getBalance` and `getGasFees`. |
+
+`getRpcUrl()` and `instance()` read the RPC configured via [`vx3 rpc init`](/docs/commands/rpc). They **throw** a `VxConfigError` (they never exit the process) if `vx.config.json` is missing, malformed, or has no RPC endpoint.
+
+### getGasFees
+
+Uses EIP-1559 fields when available and falls back to the legacy `gasPrice`. Every value is a decimal string, so the result is plain JSON (no `BigInt`):
+
+```ts
+{
+  unit: 'gwei',
+  gasPriceGwei?: string,
+  maxFeePerGasGwei?: string,
+  maxPriorityFeePerGasGwei?: string,
+  baseFeePerGasGwei?: string,
+  raw: {            // wei, as decimal strings
+    gasPrice: string | null,
+    maxFeePerGas: string | null,
+    maxPriorityFeePerGas: string | null,
+    baseFeePerGas: string | null,
+  },
+}
+```
 
 ## See also
 

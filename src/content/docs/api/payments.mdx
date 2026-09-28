@@ -8,13 +8,27 @@ description: Sending payments programmatically with vx.payment.sendPayment().
 ```ts
 import vx from 'vx3';
 
-await vx.payment.sendPayment({
+const { txHash, receipt } = await vx.payment.sendPayment({
   rpcUrl: 'http://127.0.0.1:8545',
   privateKey: process.env.PRIVATE_KEY!,
   to: '0xRecipientAddress',
   amountEth: '0.01',
 });
 ```
+
+## Options
+
+| Option | Type | Description |
+| --- | --- | --- |
+| `rpcUrl` | `string` | **Required.** RPC endpoint. |
+| `privateKey` | `string` | **Required.** Hex private key of the sender. |
+| `to` | `string` | **Required.** Recipient address. |
+| `amountEth` | `string` | **Required.** Amount in ETH, e.g. `"0.01"`. |
+| `maxFeePerGas` | `string` | Optional, in gwei. |
+| `maxPriorityFeePerGas` | `string` | Optional, in gwei. |
+| `gasLimit` | `number` | Optional. |
+
+The promise resolves after one confirmation with `{ txHash: string, receipt: TransactionReceipt | null }`. Missing required options reject with an error such as `rpcUrl is required`.
 
 ## See also
 
