@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom'
 import { DocsLayout } from 'fumadocs-ui/layouts/docs'
 import { DocsPage, DocsBody, DocsTitle, DocsDescription } from 'fumadocs-ui/page'
+import defaultMdxComponents from 'fumadocs-ui/mdx'
 import { getDoc } from '../docs-loader'
 import { pageTree } from '../source'
 
@@ -17,7 +18,7 @@ export default function DocPage() {
             {doc.frontmatter.title && <DocsTitle>{doc.frontmatter.title}</DocsTitle>}
             {doc.frontmatter.description && <DocsDescription>{doc.frontmatter.description}</DocsDescription>}
             <DocsBody>
-              <doc.Component />
+              <doc.Component components={{ pre: defaultMdxComponents.pre }} />
             </DocsBody>
           </>
         ) : (

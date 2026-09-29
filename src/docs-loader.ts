@@ -1,7 +1,10 @@
 import type { ComponentType } from 'react'
+import type { MDXComponents } from 'mdx/types'
+
+type MDXContent = ComponentType<{ components?: MDXComponents }>
 
 interface DocModule {
-  default: ComponentType
+  default: MDXContent
   frontmatter?: Record<string, unknown>
 }
 
@@ -9,7 +12,7 @@ const modules = import.meta.glob('./content/docs/**/*.mdx', { eager: true }) as 
 
 export interface DocEntry {
   slug: string
-  Component: ComponentType
+  Component: MDXContent
   frontmatter: { title?: string; description?: string }
 }
 
