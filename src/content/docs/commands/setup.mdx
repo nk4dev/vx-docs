@@ -10,9 +10,28 @@ Add Hardhat or a React frontend to the current project: `vx3 setup <hardhat|reac
 ```bash
 vx3 setup hardhat
 vx3 setup react
+vx3 setup react --sdk-version ^0.1.1
 ```
 
-`vx3 setup react` scaffolds a Vite + TypeScript demo app wired up with the `<Payment />` component and hooks — see the [React components & hooks](/docs/api/react-components) reference for how to use them in your own code.
+Both targets edit the `package.json` in the current directory and copy template files next to it. Existing scripts and dependency versions are kept.
+
+## `vx3 setup hardhat`
+
+Adds the `hh`, `hh:compile`, `hh:test`, `hh:node` and `hh:deploy` scripts, the dev dependencies Hardhat needs (`hardhat`, `@nomicfoundation/hardhat-toolbox`, `typescript` 5, `ts-node`, `@types/node`), and copies `hardhat.config.ts`, a sample `contract/` and `scripts/deploy.ts`. A CommonJS `tsconfig.json` is written unless one already exists.
+
+```bash
+vx3 setup hardhat
+npm install
+npm run hh:compile
+npm run hh:node        # in another terminal
+npm run hh:deploy
+```
+
+## `vx3 setup react`
+
+Scaffolds a Vite + TypeScript demo app with a payment form and a wallet-connect sample — see the [React components & hooks](/docs/api/react-components) reference for how to use the same building blocks in your own code.
+
+It adds `vx3` to `dependencies`: an existing version is kept, otherwise **`latest`** (the newest release on npm) is used. `--sdk-version <version>` sets it explicitly and overrides an existing entry.
 
 ## See also
 

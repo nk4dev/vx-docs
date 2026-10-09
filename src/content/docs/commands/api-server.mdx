@@ -12,6 +12,7 @@ vx3 api                    # http://127.0.0.1:8545
 vx3 api --port 8000
 vx3 api --host 0.0.0.0
 vx3 api --debug            # serves a debug page at /debug
+vx3 api --allow-origin http://localhost:5173   # let a frontend dev server call /api/pay
 ```
 
 | Flag | Default | Description |
@@ -21,6 +22,9 @@ vx3 api --debug            # serves a debug page at /debug
 | `--debug` | off | Enable the `/debug` page. |
 | `--env <name>` | `development` | Environment label shown in debug output. |
 | `--chains <json>` | — | Chain list (JSON) shown in debug output. Invalid JSON is ignored with a warning. |
+| `--allow-origin <origin>` | — | Extra origin allowed to call `POST /api/pay`. Repeatable; comma-separated values are accepted. |
+
+> **Port 8545 is also the default for Hardhat and Anvil**, and the RPC port `vx3 rpc init` writes. If a local node is already running there, start the server on another port with `--port`.
 
 ## Endpoints
 
@@ -33,7 +37,26 @@ vx3 api --debug            # serves a debug page at /debug
 | `/events` | GET | SSE stream of realtime block updates. |
 | `/debug` | GET | Debug page with an RPC selector. Only served with `--debug`, otherwise `404`. |
 
-`/api/pay` never accepts a private key in the request body. It signs with the server-side `PRIVATE_KEY` environment variable, or with dev account `(0)` when that is unset. Requests whose `Origin` header does not match the server's own origin are rejected with `403`.
+`/api/pay` never accepts a private key in the request body. It signs with the server-side `PRIVATE_KEY` environment variable, or with dev account `(0)` when that is unset.
+
+### Who may call `/api/pay`
+
+Because this endpoint moves funds, browser requests from other origins are rejected with `403`. A request is accepted when:
+
+- it has no `Origin` header (curl, server-side code), or
+- its `Origin` is the server itself — when bound to a loopback address, `localhost`, `127.0.0.1` and `[::1]` on the server's port are all treated as the same origin, or
+- its `Origin` was passed with `--allow-origin`.
+
+The `403` response names the flag to add, e.g. `--allow-origin http://localhost:5173`.
+
+### Using it from a frontend dev server
+
+The React and Vue templates proxy `/api` to `http://127.0.0.1:8545` (override with the `VX3_API_URL` environment variable). The browser still sends the dev server's origin, so allow it explicitly:
+
+```bash
+vx3 api --port 8600 --allow-origin http://localhost:5173
+VX3_API_URL=http://127.0.0.1:8600 npm run dev
+```
 
 For gas data (`/api/gas`) and server + RPC status (`/api/status`), use [`vx3 dash`](/docs/commands/dashboard).
 

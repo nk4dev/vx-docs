@@ -43,6 +43,10 @@ Without `functionName`, the call is chosen from the options you pass:
 
 The promise resolves after one confirmation with `{ txHash, receipt }`.
 
+## Contract check
+
+Before sending anything, `mintNFT()` verifies that `contractAddress` holds contract code on the target network and rejects with `No contract found at <address> on <rpcUrl>` when it does not. A transaction to an address without code would succeed while minting nothing.
+
 ## See also
 
 - [API overview](/docs/api)
