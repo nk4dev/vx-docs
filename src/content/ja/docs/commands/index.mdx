@@ -1,0 +1,69 @@
+---
+title: コマンド
+description: vx3 のインストール方法と、CLI が提供するすべてのコマンドの概要。
+---
+
+# vx3 CLI リファレンス
+
+このセクションでは、`vx3` のインストール方法と CLI が提供するすべてのコマンドを、コマンド（または関連の深いコマンドのグループ）ごとに 1 ページずつ説明します。
+
+## 前提条件
+
+- Node.js 18 以上
+- npm / pnpm / yarn / bun（いずれか 1 つ）
+
+## インストール
+
+### グローバル CLI として使う
+
+```bash
+npm install -g vx3
+```
+
+### プロジェクトの依存関係として追加する
+
+```bash
+npm install vx3
+```
+
+### その場で実行する（インストール不要）
+
+```bash
+npx vx3 <command>
+```
+
+### ソースからビルドする
+
+```bash
+git clone https://github.com/nk4dev/vx
+cd vx
+bun i
+bun run build
+bun link        # `vx3` バイナリをグローバルに公開
+```
+
+## コマンド一覧
+
+| コマンド | 説明 | 詳細 |
+| --- | --- | --- |
+| `vx3 init [name]` | デフォルト設定で新しいプロジェクトを初期化します。 | [プロジェクトの作成](/ja/docs/commands/project) |
+| `vx3 create [name]` | 新しいプロジェクトを作成します（`name` を省略すると対話形式）。 | [プロジェクトの作成](/ja/docs/commands/project) |
+| `vx3 api` | ローカルのヘルパー API サーバーを起動します（ポート 8545）。 | [`vx3 api`](/ja/docs/commands/api-server) |
+| `vx3 dash` | リアルタイム開発ダッシュボードを開きます（ポート 4000）。 | [`vx3 dash`](/ja/docs/commands/dashboard) |
+| `vx3 setup hardhat\|react` | 現在のプロジェクトに Hardhat または React フロントエンドを追加します。 | [`vx3 setup`](/ja/docs/commands/setup) |
+| `vx3 rpc init\|list` | `vx.config.json` の RPC エンドポイントを管理・表示します。 | [`vx3 rpc`](/ja/docs/commands/rpc) |
+| `vx3 pay <to> <amount>` | トランザクションを送信します。 | [`vx3 pay`](/ja/docs/commands/pay) |
+| `vx3 gas` | RPC から現在のガス代を表示します。 | [`vx3 gas`](/ja/docs/commands/gas) |
+| `vx3 ipfs fetch <cid>` | CID を指定して IPFS からコンテンツを取得します。 | [`vx3 ipfs`](/ja/docs/commands/ipfs) |
+| `vx3 generate` | テンプレート（react、vue）を生成します。 | [`vx3 generate`](/ja/docs/commands/generate) |
+| `vx3 compile <entry.sol>` | 独自コンパイラ VXC で Solidity をコンパイルします。 | [`vx3 compile`](/ja/docs/commands/compile) |
+| `vx3 nft mint <contract>` | NFT をミントします。 | [`vx3 nft`](/ja/docs/commands/nft) |
+| `vx3 sol hello` | Solidity ヘルパーのサンプル。 | [その他](/ja/docs/commands/misc) |
+| `vx3 info` | リモートの VX プラットフォームのバージョンを表示します。 | [その他](/ja/docs/commands/misc) |
+| `vx3 --version`, `-v` | SDK のバージョンを表示します。 | [その他](/ja/docs/commands/misc) |
+| `vx3 help` | ヘルプ画面を表示します。 | [その他](/ja/docs/commands/misc) |
+
+## 関連項目
+
+- [はじめに](/ja/docs) — `vx3` のインストールから実行までを 5 分で試せるクイックスタート。
+- [API リファレンス](/ja/docs/api) — `vx3` をプログラムから使う方法。

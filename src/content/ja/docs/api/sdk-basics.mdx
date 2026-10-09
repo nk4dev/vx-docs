@@ -1,0 +1,102 @@
+---
+title: SDK の基本
+description: コードから RPC、ブロック番号、残高、ガス代を読み取ります。
+---
+
+# SDK の基本
+
+### TypeScript / ESM
+
+```ts
+import vx from 'vx3';
+
+const rpc = vx.getRpcUrl();
+const block = await vx.getBlockNumber(rpc);
+const balance = await vx.getBalance(rpc, '0xAddress');
+const gas = await vx.getGasFees(rpc);
+```
+
+### CommonJS
+
+```js
+const vx = require('vx3').default;
+vx.getGasFees('http://127.0.0.1:8545').then(console.log);
+```
+
+`require('vx3')` は同じメンバーを直接公開しているため、`const { getGasFees } = require('vx3')` と書くこともできます。
+
+### Node.js の ES モジュール
+
+このパッケージは CommonJS です。Node.js のネイティブ ES モジュール（`.mjs`、または `"type": "module"`）からは、デフォルト import を使ってください。`import { getGasFees } from 'vx3'` は Node に拒否されます。Vite などのバンドラーではどちらの形式も使えます。
+
+```js
+import vx from 'vx3';
+const fees = await vx.getGasFees('http://127.0.0.1:8545');
+```
+
+## リファレンス
+
+| メンバー | 説明 |
+| --- | --- |
+| `getRpcUrl()` | `vx.config.json` の最初の RPC エンドポイントの URL。 |
+| `instance(configPath?)` | 設定を読み込み、`{ config, configs, rpcUrl }`（最初のエンドポイント、すべてのエントリ、解決済みの URL）を返します。 |
+| `getBlockNumber(rpcUrl)` | 最新のブロック番号（`Promise<number>`）。 |
+| `getBalance(rpcUrl, address)` | ETH 単位の残高（`number`）。アドレスが空の場合は例外をスローします。 |
+| `getGasFees(rpcUrl)` | 現在の手数料データ — 下記を参照してください。 |
+| `payment.sendPayment(opts)` | [支払い](/ja/docs/api/payments)を参照してください。 |
+| `mintNFT(opts)` / `nft.mintNFT` | [NFT のミント](/ja/docs/api/nft-minting)を参照してください。 |
+| `data`（名前付きエクスポート `vx` でもあります） | `getBlockNumber`、`getBalance`、`getGasFees` を持つ名前空間。 |
+| `GasFees`（型） | `getGasFees()` の戻り値の型: `import type { GasFees } from 'vx3'`。 |
+
+`getRpcUrl()` と `instance()` は、[`vx3 rpc init`](/ja/docs/commands/rpc) で設定した RPC を読み取ります。`vx.config.json` が存在しない、形式が不正、または RPC エンドポイントがない場合は、`VxConfigError` を**スロー**します（プロセスを終了させることはありません）。
+
+### getGasFees
+
+利用可能な場合は EIP-1559 のフィールドを使用し、そうでなければ従来の `gasPrice` にフォールバックします。すべての値は 10 進数の文字列なので、結果はそのまま JSON にできます（`BigInt` は含まれません）。
+
+```ts
+{
+  unit: 'gwei',
+  gasPriceGwei?: string,
+  maxFeePerGasGwei?: string,
+  maxPriorityFeePerGasGwei?: string,
+  baseFeePerGasGwei?: string,
+  raw: {            // wei 単位、10 進数の文字列
+    gasPrice: string | null,
+    maxFeePerGas: string | null,
+    maxPriorityFeePerGas: string | null,
+    baseFeePerGas: string | null,
+  },
+}
+```
+
+## `vx.config.json` を直接読み込む
+
+CLI が使っているローダーは、サブパス `vx3/core/config` から利用できます。ライブラリとして安全に使えるよう、問題は `VxConfigError` をスローして通知し、ログ出力やプロセスの終了は行いません。
+
+```ts
+import { loadVxConfig, getFirstRpcUrl, VxConfigError } from 'vx3/core/config';
+
+try {
+  const entries = loadVxConfig();              // 検証済みのエントリの配列
+  const rpcUrl = getFirstRpcUrl();             // 最初の RPC エンドポイントの URL
+} catch (err) {
+  if (err instanceof VxConfigError) console.error(err.message);
+}
+```
+
+| 関数 | 説明 |
+| --- | --- |
+| `loadVxConfig({ path?, optional? })` | 設定を読み込んで検証します。`optional: true` を指定すると、ファイルがない場合に `[]` を返します。 |
+| `getRpcEndpoints(configs?)` | RPC のエントリ（IPFS のエントリは除外）。 |
+| `getFirstRpcUrl(options?)` | 最初の RPC エンドポイントの URL。 |
+| `getIpfsEntries(configs?)` | IPFS のエントリ。 |
+| `toRpcUrl(entry)` | エントリから `protocol://host:port` を組み立てます。 |
+| `validateRpcConfigArray(configs)` | 最初に見つかった不正なエントリで例外をスローします。 |
+| `writeVxConfig(configs?, filePath?)` | 設定ファイルを書き出します（デフォルトはひな形）。 |
+| `DEFAULT_VX_CONFIG` | `vx3 rpc init` が書き出すひな形の設定。 |
+
+## 関連項目
+
+- [API の概要](/ja/docs/api)
+- [`vx3 gas`](/ja/docs/commands/gas) — `getGasFees()` に相当する CLI コマンド。

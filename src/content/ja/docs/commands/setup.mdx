@@ -1,0 +1,39 @@
+---
+title: setup
+description: 既存のプロジェクトに Hardhat または React フロントエンドを追加します。
+---
+
+# `vx3 setup`
+
+現在のプロジェクトに Hardhat または React フロントエンドを追加します: `vx3 setup <hardhat|react>`。
+
+```bash
+vx3 setup hardhat
+vx3 setup react
+vx3 setup react --sdk-version ^0.1.1
+```
+
+どちらのターゲットも、カレントディレクトリの `package.json` を編集し、その隣にテンプレートのファイルをコピーします。既存のスクリプトや依存のバージョンは変更されません。
+
+## `vx3 setup hardhat`
+
+`hh`、`hh:compile`、`hh:test`、`hh:node`、`hh:deploy` のスクリプトと、Hardhat に必要な開発用の依存（`hardhat`、`@nomicfoundation/hardhat-toolbox`、`typescript` 5 系、`ts-node`、`@types/node`）を追加し、`hardhat.config.ts`、サンプルの `contract/`、`scripts/deploy.ts` をコピーします。`tsconfig.json` がまだない場合は、CommonJS 用のものを書き出します。
+
+```bash
+vx3 setup hardhat
+npm install
+npm run hh:compile
+npm run hh:node        # 別のターミナルで
+npm run hh:deploy
+```
+
+## `vx3 setup react`
+
+支払いフォームとウォレット接続のサンプルを備えた Vite + TypeScript のデモアプリを生成します。同じ部品を自分のコードで使う方法は、[React コンポーネントとフック](/ja/docs/api/react-components)のリファレンスを参照してください。
+
+`dependencies` に `vx3` を追加します。すでに指定があればそれを維持し、なければ **`latest`**（npm 上の最新リリース）を使います。`--sdk-version <version>` を指定すると明示的に設定でき、既存の指定も上書きします。
+
+## 関連項目
+
+- [コマンドの概要](/ja/docs/commands)
+- [`vx3 generate`](/ja/docs/commands/generate) — 現在のプロジェクトに追加するのではなく、独立したテンプレートを生成します。

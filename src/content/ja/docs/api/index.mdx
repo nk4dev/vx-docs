@@ -1,0 +1,30 @@
+---
+title: API
+description: vx3 をプログラムから使う — SDK、支払い、NFT のミント、React コンポーネント。
+---
+
+# vx3 API リファレンス
+
+自分のコードから `vx3` を使うために必要な情報をまとめています。CLI については[コマンドリファレンス](/ja/docs/commands)を参照してください。
+
+## インストール
+
+```bash
+npm install vx3
+```
+
+`react` と `react-dom` は任意の peer dependency です。React コンポーネントやフックを使う場合にだけインストールしてください。それ以外は React なしで動作します。
+
+## トピック
+
+| ページ | 内容 |
+| --- | --- |
+| [SDK の基本](/ja/docs/api/sdk-basics) | `getRpcUrl`、`getBlockNumber`、`getGasFees`、ESM と CommonJS での import、`vx.config.json` の読み込み。 |
+| [支払い](/ja/docs/api/payments) | `vx.payment.sendPayment()`。 |
+| [NFT のミント](/ja/docs/api/nft-minting) | `vx.mintNFT()`。 |
+| [React コンポーネントとフック](/ja/docs/api/react-components) | `<Payment />`、`usePayment`、`usePaymentStatus`、`usePaymentDialog`、`useWallet`。 |
+
+## 関連項目
+
+- [はじめに](/ja/docs) — `vx3` のインストールから実行までを 5 分で試せるクイックスタート。
+- [コマンドリファレンス](/ja/docs/commands) — `vx3` CLI の全体。

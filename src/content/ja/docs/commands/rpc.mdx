@@ -1,0 +1,42 @@
+---
+title: rpc
+description: vx.config.json の RPC エンドポイントを管理します。
+---
+
+# `vx3 rpc`
+
+カレントディレクトリの `vx.config.json` にある RPC エンドポイントを管理・表示します。
+
+```bash
+vx3 rpc init   # ひな形の vx.config.json を作成
+vx3 rpc list   # 設定されている RPC の URL を表示
+```
+
+`list` は、最初の標準 RPC エンドポイントを URL として表示します。
+
+> `vx3 rpc init` は、既存の `vx.config.json` を確認なしでひな形に置き換えます。編集済みの場合は先にバックアップしてください。
+
+## `vx.config.json`
+
+このファイルはエンドポイントの JSON 配列です（単一のオブジェクトも受け付けます）。`vx3 rpc init` は次の内容を書き出します。
+
+```json
+[
+  { "host": "localhost", "port": 8545, "protocol": "http", "type": "rpc" },
+  { "host": "rpc.example.com", "port": 443, "protocol": "https", "type": "rpc" },
+  { "type": "ipfs", "gateway": "https://ipfs.io" }
+]
+```
+
+| エントリの種類 | 必須フィールド | 備考 |
+| --- | --- | --- |
+| `rpc`（デフォルト） | `host`、`port`、`protocol`（`http`、`https`、`ws`、`wss`） | **最初の** RPC エントリが、`pay`、`gas`、`nft`、`api`、`dash` および `getRpcUrl()` のデフォルトになります。 |
+| `ipfs` | `gateway`（URL）**または** `api`（`host`、`port`、`protocol`） | [`vx3 ipfs`](/ja/docs/commands/ipfs) で使用されます。 |
+
+ファイルが存在しない、JSON でない、または内容が不正な場合は、わかりやすいエラーが表示されます（`vx3 rpc init` で新しく作成できます）。
+
+## 関連項目
+
+- [コマンドの概要](/ja/docs/commands)
+- [`vx3 api`](/ja/docs/commands/api-server) と [`vx3 dash`](/ja/docs/commands/dashboard) — どちらもこの RPC に中継します。
+- [`vx3 pay`](/ja/docs/commands/pay) と [`vx3 gas`](/ja/docs/commands/gas) — `--rpc` を省略すると、この RPC がデフォルトで使われます。

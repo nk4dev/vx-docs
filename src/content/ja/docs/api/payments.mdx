@@ -1,0 +1,37 @@
+---
+title: 支払い
+description: vx.payment.sendPayment() でプログラムから支払いを送信します。
+---
+
+# プログラムから支払いを送信する
+
+```ts
+import vx from 'vx3';
+
+const { txHash, receipt } = await vx.payment.sendPayment({
+  rpcUrl: 'http://127.0.0.1:8545',
+  privateKey: process.env.PRIVATE_KEY!,
+  to: '0xRecipientAddress',
+  amountEth: '0.01',
+});
+```
+
+## オプション
+
+| オプション | 型 | 説明 |
+| --- | --- | --- |
+| `rpcUrl` | `string` | **必須。** RPC エンドポイント。 |
+| `privateKey` | `string` | **必須。** 送信者の 16 進数の秘密鍵。 |
+| `to` | `string` | **必須。** 受取人のアドレス。 |
+| `amountEth` | `string` | **必須。** ETH 単位の金額（例: `"0.01"`）。 |
+| `maxFeePerGas` | `string` | 任意。gwei 単位。 |
+| `maxPriorityFeePerGas` | `string` | 任意。gwei 単位。 |
+| `gasLimit` | `number` | 任意。 |
+
+Promise は 1 回の承認（コンファメーション）の後、`{ txHash: string, receipt: TransactionReceipt | null }` で解決されます。必須オプションが欠けている場合は、`rpcUrl is required` のようなエラーで reject されます。
+
+## 関連項目
+
+- [API の概要](/ja/docs/api)
+- [`vx3 pay`](/ja/docs/commands/pay) — 同等の CLI コマンド。
+- [React コンポーネントとフック](/ja/docs/api/react-components) — これをもとに作られた、そのまま使える `<Payment />` UI。

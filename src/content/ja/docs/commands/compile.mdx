@@ -1,0 +1,32 @@
+---
+title: compile
+description: 独自コンパイラ VXC で Solidity をコンパイルします。
+---
+
+# `vx3 compile`
+
+独自コンパイラ VXC を使って Solidity をコンパイルします: `vx3 compile <entry.sol> [options]`。
+
+```bash
+vx3 compile contracts/Token.sol \
+  --out build \
+  --optimize --runs 1000 \
+  --evm cancun \
+  --remap @openzeppelin/=node_modules/@openzeppelin/
+```
+
+| オプション | デフォルト | 説明 |
+| --- | --- | --- |
+| `-o, --out <dir>` | `artifacts/vxc` | 出力ディレクトリ。 |
+| `--optimize` | オフ | オプティマイザを有効にします。 |
+| `--runs <n>` | `200` | オプティマイザの runs 値。 |
+| `--evm <version>` | コンパイラのデフォルト | 対象の EVM バージョン（例: `cancun`）。 |
+| `--base <dir>` | カレントディレクトリ | import 解決の基準パス。 |
+| `--metadata` | オフ | Solidity のメタデータを出力します。 |
+| `--remap k=v` | — | import リマッピングを追加します（複数指定可）。 |
+
+アーティファクト（`<Contract>.json` と `vxc.manifest.json`）は `--out` に書き出され、そのままデプロイに使用できます。警告は標準エラー出力に表示され、コンパイルエラーが 1 つでも報告されると、コマンドは終了コード `1` で終了します。
+
+## 関連項目
+
+- [コマンドの概要](/ja/docs/commands)

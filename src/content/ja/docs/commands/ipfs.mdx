@@ -1,0 +1,23 @@
+---
+title: ipfs
+description: IPFS からコンテンツを取得します。
+---
+
+# `vx3 ipfs`
+
+CID を指定してコンテンツを取得します: `vx3 ipfs fetch <cid> [gatewayUrl]`。サブコマンドは `fetch` のみです。
+
+```bash
+vx3 ipfs fetch <cid>
+vx3 ipfs fetch <cid> https://ipfs.io
+```
+
+`gatewayUrl` を省略すると、`vx.config.json` の `"type": "ipfs"` エントリからゲートウェイが決まります（`gateway` の URL、なければ `api` の host / port / protocol）。`vx3 rpc init` は、`https://ipfs.io` を指すデフォルトのエントリを書き出します。
+
+テキストと JSON のレスポンスはそのまま表示され、バイナリコンテンツはバイト単位のサイズのみが表示されます。
+
+## 関連項目
+
+- [コマンドの概要](/ja/docs/commands)
+- [`vx3 rpc`](/ja/docs/commands/rpc) — IPFS エントリを含む `vx.config.json` の形式。
+- [NFT のミント](/ja/docs/api/nft-minting) — `tokenURI` の値には `ipfs://` の CID がよく使われます。

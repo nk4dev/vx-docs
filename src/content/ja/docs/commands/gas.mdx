@@ -1,0 +1,21 @@
+---
+title: gas
+description: 現在のガス代を見積もります。
+---
+
+# `vx3 gas`
+
+RPC エンドポイントから現在のガス代データを取得します: `vx3 gas [--rpc <url>] [--json]`。`--rpc` を省略すると、`vx.config.json` の最初の RPC が使われます。
+
+```bash
+vx3 gas
+vx3 gas --rpc http://127.0.0.1:8545
+vx3 gas --json
+```
+
+`baseFeePerGas`、`maxPriorityFee`、`maxFeePerGas`、および従来の `gasPrice` を gwei 単位で表示します（ネットワークが値を返さない場合は `n/a`）。`--json` を指定すると、[`getGasFees()`](/ja/docs/api/sdk-basics#getgasfees) と同じ形式で `{ "rpc": "...", ...fees }` を出力し、失敗した場合は `{ "error": "..." }` を出力して終了コード `1` で終了します。
+
+## 関連項目
+
+- [コマンドの概要](/ja/docs/commands)
+- [SDK の基本](/ja/docs/api/sdk-basics) — 同等の `vx.getGasFees()` 呼び出し。
