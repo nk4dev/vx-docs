@@ -1,0 +1,71 @@
+---
+title: はじめに
+description: 5 分で VX SDK を使い始めましょう。
+---
+
+# はじめに
+
+`vx3` は、Web3 アプリケーションの開発・テスト・リリースのための開発者向けツールキットです。CLI としても、自分のコードに import して使う SDK としても動作し、次の機能を備えています。
+
+- マルチチェーン対応（ethers.js v6）
+- ブロック・ガス・支払いを中継するローカルのヘルパー API サーバー
+- リアルタイム開発ダッシュボード（`vx3 dash`）
+- 独自の Solidity コンパイラ **VXC**
+- 支払いと NFT ミントのヘルパー、およびそのまま使える React コンポーネントとフック（支払い、ウォレット接続）
+- Hardhat・React・Vue プロジェクトの雛形生成
+- IPFS の取得ヘルパー
+- RPC エンドポイントの管理
+
+## 必要なもの
+
+- [Node.js](https://nodejs.org/en/download/) バージョン 18 以上
+- npm / pnpm / yarn / bun（いずれか 1 つ）
+
+## インストール
+
+```bash
+npm install -g vx3
+```
+
+プロジェクトの依存関係として追加する（`npm install vx3`）ことも、`npx vx3 <command>` でインストールせずに実行することもできます。
+
+ソースからビルドする場合は次のとおりです。
+
+```bash
+git clone https://github.com/nk4dev/vx
+cd vx
+bun i
+bun run build
+bun link        # `vx3` バイナリをグローバルに公開
+```
+
+## 試してみる
+
+新しいプロジェクトを作成し、RPC エンドポイントを設定します。
+
+```bash
+vx3 create
+vx3 rpc init
+```
+
+ローカルのヘルパー API サーバーを起動します。
+
+```bash
+vx3 api --debug
+```
+
+または、リアルタイム開発ダッシュボードを開きます。
+
+```bash
+vx3 dash --open
+```
+
+設定した RPC の現在のガス代を確認します。
+
+```bash
+vx3 gas
+```
+
+## 次のステップ
+
+CLI の全体像は[コマンドリファレンス](/ja/docs/commands)を、TypeScript / CommonJS からの SDK の使い方、支払いの送信や NFT のミント、同梱の React コンポーネントについては [API リファレンス](/ja/docs/api)を参照してください。

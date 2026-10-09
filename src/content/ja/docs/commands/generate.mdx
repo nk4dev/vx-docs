@@ -1,0 +1,36 @@
+---
+title: generate
+description: React または Vue のフロントエンドテンプレートを生成します。
+---
+
+# `vx3 generate`
+
+フレームワークのテンプレート（react、vue）を生成します。
+
+```bash
+vx3 generate list               # 利用可能なテンプレートを一覧表示
+vx3 generate template/react my-app
+vx3 generate template/vue my-app
+vx3 generate template/react my-app --sdk-version ^0.1.1   # vx3 のバージョンを固定する
+vx3 generate template/react my-app --debug   # 公開パッケージではなくローカルの SDK ソースに依存させる
+```
+
+どちらも、支払いフォームを備えた Vite + TypeScript のデモアプリを生成します（React 版にはウォレット接続のサンプルも含まれます）。同じ部品を自分のコードで使う方法は、[React コンポーネントとフック](/ja/docs/api/react-components)のリファレンスを参照してください。`targetDir` を省略するとカレントディレクトリに書き出され、既存の `package.json` があればそこにマージされます。
+
+| オプション | 説明 |
+| --- | --- |
+| `--sdk-version <version>` | `package.json` に書き込む `vx3` のバージョン（範囲や dist-tag も可）。`--sdk-version=<version>` の形式も使えます。 |
+| `--debug` | ローカルの `vx3` を `file:` パスで参照します。 |
+
+## インストールされる `vx3` のバージョン
+
+特に指定しない限り、生成されるプロジェクトは **`vx3@latest`**（npm に公開されている最新リリース）に依存するため、`npm install` は常に解決できます。優先順位は `--sdk-version`、`--debug`、`latest` の順です。使用した依存はコマンドの出力に表示されます（`Using vx3 dependency: ...`）。
+
+## Backend API モード
+
+テンプレートは `/api` を [`vx3 api`](/ja/docs/commands/api-server) のデフォルトアドレスである `http://127.0.0.1:8545` にプロキシします。別の場所を指す場合は `VX3_API_URL` を設定し、開発サーバーからの支払いを受け付けるよう API サーバーを `--allow-origin http://localhost:5173` 付きで起動してください。
+
+## 関連項目
+
+- [コマンドの概要](/ja/docs/commands)
+- [`vx3 setup`](/ja/docs/commands/setup) — 新しいディレクトリではなく、既存のプロジェクトに同じテンプレートを追加します。

@@ -1,0 +1,38 @@
+---
+title: pay
+description: コマンドラインからトランザクションを送信します。
+---
+
+# `vx3 pay`
+
+ETH を送金します: `vx3 pay <to> <amount> [--rpc <url>] [--key <privateKey>] [--json]`。`<amount>` は ETH 単位です（例: `0.01`）。`--rpc` を省略すると、`vx.config.json` の最初の RPC が使われます。
+
+| フラグ | 説明 |
+| --- | --- |
+| `-r, --rpc <url>` | 送信に使用する RPC エンドポイント。 |
+| `-k, --key <privateKey>` | 秘密鍵。非推奨 — 下記を参照してください。 |
+| `--json` | テキストの代わりに `{ "txHash", "blockNumber" }`（または `{ "error" }`）を出力します。 |
+
+秘密鍵は、デフォルトでは環境変数 `PRIVATE_KEY` から読み込まれます。`--key` で直接渡すこともできますが、警告が表示されます。シェルの履歴やプロセス一覧から漏洩するおそれがあるためです。
+
+```bash
+# bash / zsh
+export PRIVATE_KEY='0x...'
+vx3 pay 0xRecipientAddress 0.01 --rpc http://127.0.0.1:8545
+```
+
+```powershell
+# PowerShell
+$env:PRIVATE_KEY='0x...'
+vx3 pay 0xRecipientAddress 0.01 --rpc http://127.0.0.1:8545
+```
+
+コマンドは 1 回の承認（コンファメーション）を待ってから、トランザクションハッシュとブロック番号を表示します。
+
+値が必要なフラグに値がない場合は、すぐに失敗します。`vx3 pay <to> 0.01 --rpc` は、設定済みの RPC で黙って送金するのではなく、`Missing value for --rpc` を表示して終了します。
+
+## 関連項目
+
+- [コマンドの概要](/ja/docs/commands)
+- [プログラムから支払いを送信する](/ja/docs/api/payments) — 同等の SDK 呼び出し。
+- [`vx3 rpc`](/ja/docs/commands/rpc) — デフォルトの RPC を設定します。

@@ -1,0 +1,44 @@
+---
+title: nft mint
+description: コマンドラインから NFT をミントします。
+---
+
+# `vx3 nft mint`
+
+NFT をミントします: `vx3 nft mint <contractAddress> [--to <address>] [--id <tokenId>] [--uri <tokenURI>] [--fn <functionName>] [--rpc <url>] [--key <privateKey>] [--json]`。サブコマンドは `mint` のみです。
+
+```bash
+export PRIVATE_KEY='0x...'
+vx3 nft mint 0xContractAddress \
+  --to 0xRecipientAddress \
+  --uri ipfs://... \
+  --rpc http://127.0.0.1:8545
+```
+
+`--to` のデフォルトは署名者自身のアドレスです。`--rpc` / `--key`（短縮形: `-r` / `-k`）は [`vx3 pay`](/ja/docs/commands/pay) と同じように動作します。RPC は `vx.config.json` に、鍵は `PRIVATE_KEY` にフォールバックします。
+
+## ミント関数の選択
+
+デフォルトの ABI は一般的な ERC-721 のシグネチャをカバーしており、渡したフラグに応じて呼び出す関数が決まります。
+
+| フラグ | 呼び出される関数 |
+| --- | --- |
+| `--uri` のみ | `safeMint(address,string)` |
+| `--id` のみ | `mint(address,uint256)` |
+| `--id` と `--uri` | エラー — デフォルトの ABI には `(address,uint256,string)` のオーバーロードがありません。 |
+| どちらもなし | エラー — いずれか一方を指定してください。 |
+
+`--fn <name>` を渡すと、代わりに任意の関数を呼び出せます。`to`、続いて `--id` と `--uri`（指定した場合）が、この順番で引数として渡されます。カスタム ABI は [SDK](/ja/docs/api/nft-minting) からのみ利用できます。
+
+`--json` を指定すると、`{ "txHash", "blockNumber" }`（または `{ "error" }`）を出力します。
+
+## 安全のためのチェック
+
+- コントラクトアドレスには、対象のネットワーク上でコントラクトのコードが存在している必要があります。存在しない場合は、何もミントしないトランザクションを送る代わりに、`No contract found at <address>` で失敗します。
+- 値が必要なフラグに値がない場合は、`Missing value for <flag>` で失敗します。デフォルトの RPC、鍵、受取人にフォールバックすることはありません。
+
+## 関連項目
+
+- [コマンドの概要](/ja/docs/commands)
+- [プログラムから NFT をミントする](/ja/docs/api/nft-minting) — 同等の SDK 呼び出し。
+- [`vx3 ipfs`](/ja/docs/commands/ipfs) — `ipfs://` URI が指すメタデータを取得します。

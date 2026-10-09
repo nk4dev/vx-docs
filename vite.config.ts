@@ -7,7 +7,7 @@ import mdx from '@mdx-js/rollup'
 import remarkFrontmatter from 'remark-frontmatter'
 import remarkMdxFrontmatter from 'remark-mdx-frontmatter'
 import remarkGfm from 'remark-gfm'
-import { initSimpleSearch } from 'fumadocs-core/search/server'
+import { createSearchServer } from './src/search-server'
 
 function shim(rel: string) {
   return fileURLToPath(new URL(rel, import.meta.url))
@@ -30,7 +30,7 @@ function searchApiDevMiddleware(): Plugin {
         }
 
         const indexes = JSON.parse(readFileSync(shim('./src/generated/search-index.json'), 'utf8'))
-        const searchServer = initSimpleSearch({ indexes })
+        const searchServer = createSearchServer(indexes)
         const results = await searchServer.search(query, {
           tag: url.searchParams.get('tag')?.split(',') ?? undefined,
           locale: url.searchParams.get('locale') ?? undefined,

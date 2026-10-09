@@ -29,6 +29,8 @@ vx3 pay 0xRecipientAddress 0.01 --rpc http://127.0.0.1:8545
 
 The command waits for one confirmation and prints the transaction hash and block number.
 
+A flag that needs a value fails fast when the value is missing: `vx3 pay <to> 0.01 --rpc` exits with `Missing value for --rpc` rather than silently sending through the configured RPC.
+
 ## See also
 
 - [Commands overview](/docs/commands)

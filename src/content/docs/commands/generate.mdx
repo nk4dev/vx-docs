@@ -11,10 +11,24 @@ Generate a framework template (react, vue).
 vx3 generate list               # list available templates
 vx3 generate template/react my-app
 vx3 generate template/vue my-app
+vx3 generate template/react my-app --sdk-version ^0.1.1   # pin the vx3 version
 vx3 generate template/react my-app --debug   # depend on the local SDK source instead of the published package
 ```
 
-Both scaffold a Vite + TypeScript demo app wired up with the `<Payment />` component and hooks — see the [React components & hooks](/docs/api/react-components) reference for how to use them in your own code.
+Both scaffold a Vite + TypeScript demo app with a payment form (the React one also includes a wallet-connect sample) — see the [React components & hooks](/docs/api/react-components) reference for how to use the same building blocks in your own code. When `targetDir` is omitted, files are written to the current directory and merged into an existing `package.json`.
+
+| Option | Description |
+| --- | --- |
+| `--sdk-version <version>` | Version (or range / dist-tag) of `vx3` written to `package.json`. Also accepted as `--sdk-version=<version>`. |
+| `--debug` | Depend on the local `vx3` checkout through a `file:` path. |
+
+## Which `vx3` version is installed
+
+Unless told otherwise, the generated project depends on **`vx3@latest`** — the newest release published on npm — so `npm install` always resolves. Precedence: `--sdk-version`, then `--debug`, then `latest`. The command prints the dependency it used (`Using vx3 dependency: ...`).
+
+## Backend API mode
+
+The templates proxy `/api` to `http://127.0.0.1:8545`, the default address of [`vx3 api`](/docs/commands/api-server). Set `VX3_API_URL` to point elsewhere, and start the API server with `--allow-origin http://localhost:5173` so it accepts payments from the dev server.
 
 ## See also
 

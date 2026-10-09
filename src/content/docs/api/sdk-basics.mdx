@@ -25,6 +25,15 @@ vx.getGasFees('http://127.0.0.1:8545').then(console.log);
 
 `require('vx3')` also exposes the same members directly, so `const { getGasFees } = require('vx3')` works too.
 
+### Node.js ES modules
+
+The package is CommonJS. From a native Node.js ES module (`.mjs`, or `"type": "module"`), use the default import — `import { getGasFees } from 'vx3'` is rejected by Node. Bundlers such as Vite accept both forms.
+
+```js
+import vx from 'vx3';
+const fees = await vx.getGasFees('http://127.0.0.1:8545');
+```
+
 ## Reference
 
 | Member | Description |
@@ -37,6 +46,7 @@ vx.getGasFees('http://127.0.0.1:8545').then(console.log);
 | `payment.sendPayment(opts)` | See [Payments](/docs/api/payments). |
 | `mintNFT(opts)` / `nft.mintNFT` | See [NFT minting](/docs/api/nft-minting). |
 | `data` (also the named export `vx`) | The namespace holding `getBlockNumber`, `getBalance` and `getGasFees`. |
+| `GasFees` (type) | The return type of `getGasFees()`: `import type { GasFees } from 'vx3'`. |
 
 `getRpcUrl()` and `instance()` read the RPC configured via [`vx3 rpc init`](/docs/commands/rpc). They **throw** a `VxConfigError` (they never exit the process) if `vx.config.json` is missing, malformed, or has no RPC endpoint.
 
@@ -59,6 +69,32 @@ Uses EIP-1559 fields when available and falls back to the legacy `gasPrice`. Eve
   },
 }
 ```
+
+## Reading `vx.config.json` directly
+
+The loader the CLI uses is available from the `vx3/core/config` subpath. It is library-safe: problems are reported by throwing `VxConfigError`, never by logging or exiting.
+
+```ts
+import { loadVxConfig, getFirstRpcUrl, VxConfigError } from 'vx3/core/config';
+
+try {
+  const entries = loadVxConfig();              // validated array of entries
+  const rpcUrl = getFirstRpcUrl();             // first RPC endpoint as a URL
+} catch (err) {
+  if (err instanceof VxConfigError) console.error(err.message);
+}
+```
+
+| Function | Description |
+| --- | --- |
+| `loadVxConfig({ path?, optional? })` | Read and validate the config. `optional: true` returns `[]` when the file is missing. |
+| `getRpcEndpoints(configs?)` | The RPC entries (IPFS entries skipped). |
+| `getFirstRpcUrl(options?)` | URL of the first RPC endpoint. |
+| `getIpfsEntries(configs?)` | The IPFS entries. |
+| `toRpcUrl(entry)` | Build `protocol://host:port` from an entry. |
+| `validateRpcConfigArray(configs)` | Throw on the first invalid entry. |
+| `writeVxConfig(configs?, filePath?)` | Write a config file (the starter file by default). |
+| `DEFAULT_VX_CONFIG` | The starter config `vx3 rpc init` writes. |
 
 ## See also
 

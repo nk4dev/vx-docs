@@ -13,14 +13,16 @@ Everything you need to use `vx3` from your own code. For the CLI, see the [Comma
 npm install vx3
 ```
 
+`react` and `react-dom` are optional peer dependencies: install them only if you use the React component or hooks. Everything else works without React.
+
 ## Topics
 
 | Page | Covers |
 | --- | --- |
-| [SDK basics](/docs/api/sdk-basics) | `getRpcUrl`, `getBlockNumber`, `getGasFees`; ESM and CommonJS imports. |
+| [SDK basics](/docs/api/sdk-basics) | `getRpcUrl`, `getBlockNumber`, `getGasFees`; ESM and CommonJS imports; reading `vx.config.json`. |
 | [Payments](/docs/api/payments) | `vx.payment.sendPayment()`. |
 | [NFT minting](/docs/api/nft-minting) | `vx.mintNFT()`. |
-| [React components & hooks](/docs/api/react-components) | `<Payment />`, `usePayment`, `usePaymentStatus`, `usePaymentDialog`. |
+| [React components & hooks](/docs/api/react-components) | `<Payment />`, `usePayment`, `usePaymentStatus`, `usePaymentDialog`, `useWallet`. |
 
 ## See also
 

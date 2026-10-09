@@ -1,0 +1,31 @@
+---
+title: init & create
+description: 新しい vx3 プロジェクトを作成します。
+---
+
+# `vx3 init` / `vx3 create`
+
+## `vx3 init [name]`
+
+同梱のテンプレートから新しいプロジェクトディレクトリを作成します。作成先はカレントディレクトリ内の `name` で、省略した場合は `my-vx-project` になります。同名のディレクトリがすでに存在する場合、コマンドは失敗します。
+
+```bash
+vx3 init
+vx3 init my-app
+```
+
+`name` は単純なディレクトリ名でなければなりません。絶対パスや `.` / `..` を含む指定は拒否されます。
+
+## `vx3 create [name]`
+
+新しいプロジェクトを作成します。`name` を指定した場合は `vx3 init` と同じ動作になり、省略した場合は対話形式のプロンプトが起動します。
+
+```bash
+vx3 create
+vx3 create my-app
+```
+
+## 関連項目
+
+- [コマンドの概要](/ja/docs/commands)
+- [`vx3 setup`](/ja/docs/commands/setup) — 既存のプロジェクトに Hardhat または React フロントエンドを追加します。

@@ -1,0 +1,54 @@
+---
+title: NFT のミント
+description: vx.mintNFT() でプログラムから NFT をミントします。
+---
+
+# プログラムから NFT をミントする
+
+```ts
+import vx from 'vx3';
+
+const { txHash, receipt } = await vx.mintNFT({
+  rpcUrl: 'http://127.0.0.1:8545',
+  privateKey: process.env.PRIVATE_KEY!,
+  contractAddress: '0xContractAddress',
+  to: '0xRecipientAddress',
+  tokenURI: 'ipfs://...',
+});
+```
+
+## オプション
+
+| オプション | 型 | 説明 |
+| --- | --- | --- |
+| `rpcUrl` | `string` | **必須。** RPC エンドポイント。 |
+| `privateKey` | `string` | **必須。** 署名者の 16 進数の秘密鍵。 |
+| `contractAddress` | `string` | **必須。** NFT コントラクト。 |
+| `to` | `string` | 受取人。デフォルトは署名者のアドレス。 |
+| `tokenId` | `number \| bigint` | `mint(address,uint256)` 形式のコントラクト向け。 |
+| `tokenURI` | `string` | `safeMint(address,string)` 形式のコントラクト向け。 |
+| `functionName` | `string` | 任意の関数を呼び出します。`to`、続いて `tokenId` / `tokenURI`（指定した場合）が引数になります。 |
+| `abi` | `string[]` | デフォルトの ERC-721 シグネチャを上書きする、人間が読める形式（human-readable）の ABI フラグメント。 |
+| `gasLimit` | `number` | 任意。 |
+| `maxFeePerGas`, `maxPriorityFeePerGas` | `string` | 任意。gwei 単位。 |
+
+## 呼び出される関数
+
+`functionName` を指定しない場合、渡したオプションに応じて呼び出す関数が決まります。
+
+- `tokenURI` のみ → `safeMint(address,string)`
+- `tokenId` のみ → `mint(address,uint256)`
+- 両方 → 例外をスローします。デフォルトの ABI には `(address,uint256,string)` のオーバーロードがありません。どちらか一方だけを指定するか、`functionName` とカスタムの `abi` を使用してください。
+- どちらもなし → 例外をスローします。
+
+Promise は 1 回の承認（コンファメーション）の後、`{ txHash, receipt }` で解決されます。
+
+## コントラクトの確認
+
+`mintNFT()` は何かを送信する前に、対象のネットワーク上で `contractAddress` にコントラクトのコードが存在することを確認し、存在しない場合は `No contract found at <address> on <rpcUrl>` で reject します。コードのないアドレスへのトランザクションは、何もミントしないまま成功してしまうためです。
+
+## 関連項目
+
+- [API の概要](/ja/docs/api)
+- [`vx3 nft mint`](/ja/docs/commands/nft) — 同等の CLI コマンド。
+- [`vx3 ipfs`](/ja/docs/commands/ipfs) — `ipfs://` URI が指すメタデータを取得します。

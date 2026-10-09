@@ -1,7 +1,7 @@
-import { initSimpleSearch } from 'fumadocs-core/search/server'
+import { createSearchServer } from '../../src/search-server'
 import indexes from '../../src/generated/search-index.json'
 
-const server = initSimpleSearch({ indexes })
+const server = createSearchServer(indexes)
 
 export async function onRequestGet({ request }: { request: Request }): Promise<Response> {
   const url = new URL(request.url)

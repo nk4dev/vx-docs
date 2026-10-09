@@ -1,0 +1,119 @@
+---
+title: React コンポーネントとフック
+description: 同梱の <Payment /> コンポーネントと、usePayment、usePaymentStatus、usePaymentDialog、useWallet。
+---
+
+# React コンポーネントとフック
+
+`vx3` には、そのまま使える `<Payment />` コンポーネントと、支払い・ウォレット接続のためのフックが同梱されています。`vx3`、または React 専用のエントリ `vx3/react` から import できます。
+
+```tsx
+import { Payment, useWallet } from 'vx3';
+// または
+import { Payment, useWallet } from 'vx3/react';
+```
+
+`react` と `react-dom`（18 以上）は任意の peer dependency なので、アプリ側でインストールしてください。SDK のそれ以外の部分は React なしで読み込めます。React が必要になるのは、これらのエクスポートを実際に使ったときだけです。
+
+[`vx3 setup react`](/ja/docs/commands/setup) や [`vx3 generate`](/ja/docs/commands/generate) で生成されるデモアプリには、同じコンポーネントとフックの独立したコピーが含まれているため、自由に編集できます。
+
+```tsx
+import { Payment } from 'vx3';
+
+<Payment
+  to="0xRecipientAddress"
+  amount="0.01"
+  mode="wallet" // "wallet" は window.ethereum を使用、"api" は /api/pay に POST
+  onSuccess={(result) => console.log(result.txHash)}
+  onError={(error) => console.error(error)}
+/>;
+```
+
+## `<Payment />` の props
+
+| Prop | 型 | 説明 |
+| --- | --- | --- |
+| `to` | `string` | 受取人のアドレス。 |
+| `amount` | `string` | ETH 単位の金額（10 進数の文字列。下記の「金額」を参照）。 |
+| `mode` | `"api" \| "wallet"` | 支払いの経路。 |
+| `currency` | `string` | API に送られるラベル（デフォルトは `ETH`）。 |
+| `apiEndpoint` | `string` | `"api"` モードで使うエンドポイント（デフォルトは `/api/pay`）。 |
+| `rpcUrl` | `string` | API に転送される RPC の URL。 |
+| `onSuccess` | `(result: PaymentResult) => void` | `{ txHash, receipt? }` を引数に呼び出されます。 |
+| `onError` | `(error: Error) => void` | 失敗時に呼び出されます。 |
+| `className` | `string` | ルートコンテナの CSS クラス。 |
+
+## 支払いモード
+
+- **`wallet`** — ブラウザウォレット（`window.ethereum`、例: MetaMask）にアカウントを要求し、`eth_sendTransaction` でトランザクションを送信します。秘密鍵がウォレットの外に出ることはありません。
+- **`api`** — `{ to, amountEth, rpcUrl, currency }` を `apiEndpoint` に POST します。`/api/pay` は [`vx3 api`](/ja/docs/commands/api-server) が提供しており、サーバーの `PRIVATE_KEY`（または開発用アカウント）で署名します。リクエストで秘密鍵を受け付けることはありません。なお、フックは `mode` を省略すると `api` モードがデフォルトになります。
+
+`vx3 api` は、他のオリジンからのブラウザリクエストを拒否します。アプリを開発サーバーで動かしている場合は、`--allow-origin <アプリのオリジン>` を付けて起動してください。詳しくは [`vx3 api`](/ja/docs/commands/api-server) の「フロントエンドの開発サーバーから使う」を参照してください。
+
+## 金額
+
+金額は、浮動小数点ではなく文字列による厳密な計算で ETH から wei に変換されます。そのため `"0.57"` は、ちょうど `570000000000000000` wei として送信されます。金額は、小数点以下 18 桁までの負でない 10 進数でなければなりません。それ以外（`"abc"`、`"-1"`、`"1e18"`、小数 19 桁以上）は、ウォレットに署名を求める前に `Invalid amount: ...` で失敗します。
+
+## フック
+
+独自の UI を作る場合は、内部で使われているフックを直接利用できます。
+
+```tsx
+import { usePayment, usePaymentStatus, usePaymentDialog } from 'vx3';
+
+const { pay, state } = usePayment();
+await pay({ to: '0xRecipientAddress', amount: '0.01', mode: 'wallet' });
+```
+
+| フック | 戻り値 |
+| --- | --- |
+| `usePayment()` | `{ pay(options), state }` — `pay` は `{ txHash, receipt? }` で解決され、失敗時は `Error` で reject されます。 |
+| `usePaymentStatus()` | 現在の状態（`status`: `idle \| pending \| success \| error`、および `txHash` / `receipt` / `error`）と、`setPending`、`setSuccess`、`setError`、`reset`。 |
+| `usePaymentDialog()` | 支払いモーダルを組み込むための `{ isOpen, open, close, toggle }`。 |
+
+## `useWallet`
+
+EIP-1193 プロバイダー（`window.ethereum`）を通じてブラウザウォレットに接続し、アカウント・チェーン・残高を同期します。
+
+```tsx
+import { useWallet } from 'vx3';
+
+function Wallet() {
+  const wallet = useWallet();
+
+  if (wallet.status === 'unavailable') return <p>ウォレットが見つかりません。</p>;
+  if (wallet.status !== 'connected') {
+    return <button onClick={wallet.connect}>ウォレットを接続</button>;
+  }
+  return (
+    <p>
+      {wallet.address}（チェーン {wallet.chainId}）
+      <button onClick={wallet.disconnect}>切断</button>
+    </p>
+  );
+}
+```
+
+| オプション | デフォルト | 説明 |
+| --- | --- | --- |
+| `autoConnect` | `true` | マウント時に、すでに許可済みのアカウントを復元します（ウォレットのプロンプトは出ません）。 |
+| `provider` | `window.ethereum` | 特定の EIP-1193 プロバイダーを使用します。 |
+
+| 戻り値 | 型 | 説明 |
+| --- | --- | --- |
+| `status` | `'unavailable' \| 'disconnected' \| 'connecting' \| 'connected'` | プロバイダーが存在しない場合は `unavailable`。 |
+| `address` | `string \| null` | アクティブなアカウント（小文字）。 |
+| `chainId` | `number \| null` | 10 進数のチェーン ID。 |
+| `balanceWei` | `bigint \| null` | アクティブなアカウントの残高（wei）。 |
+| `error` | `Error \| null` | 直近のエラー（ユーザーがリクエストを拒否した場合など）。 |
+| `connect()` | `Promise<string \| null>` | ウォレットに接続を要求します。アドレスで解決され、失敗時は `null`。 |
+| `disconnect()` | `Promise<void>` | ローカルの状態をクリアし、ウォレットが対応していれば権限も取り消します。 |
+| `switchChain(chainId)` | `Promise<void>` | ウォレットにチェーンの切り替えを要求します。ウォレットのエラーはそのまま再スローされます。コード `4902` は、そのチェーンがまだウォレットに追加されていないことを意味します。 |
+| `refreshBalance()` | `Promise<void>` | 残高を再取得します。 |
+
+このフックは、ウォレットの `accountsChanged`、`chainChanged`、`disconnect` イベントに追従します。残高はアカウントやチェーンが変わると再取得されます。トランザクションを送信した後に新しい残高を反映するには、`refreshBalance()` を呼び出してください。
+
+## 関連項目
+
+- [API の概要](/ja/docs/api)
+- [支払い](/ja/docs/api/payments) — サーバー側の `sendPayment()` 呼び出し。

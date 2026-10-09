@@ -16,6 +16,12 @@ bun run dev
 
 This command starts a local development server. Most changes are reflected live without having to restart the server.
 
+## Translations
+
+English pages live in `src/content/docs` and are served at `/docs/...`. Japanese pages live in `src/content/ja/docs` at the same relative path and are served at `/ja/docs/...`; a page with no translation falls back to English.
+
+When adding a page, add it to both directories and to the sidebar in `src/source.ts`. Links inside Japanese pages should point at `/ja/docs/...`.
+
 ## Build
 
 ```bash

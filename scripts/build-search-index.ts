@@ -3,7 +3,12 @@ import { mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'f
 import { join, relative } from 'path'
 
 const here = fileURLToPath(new URL('.', import.meta.url))
-const DOCS_DIR = join(here, '../src/content/docs')
+const CONTENT_DIR = join(here, '../src/content')
+// Mirrors the content roots in src/docs-loader.ts; `prefix` is the locale's URL prefix.
+const LOCALES = [
+  { locale: 'en', dir: join(CONTENT_DIR, 'docs'), prefix: '' },
+  { locale: 'ja', dir: join(CONTENT_DIR, 'ja/docs'), prefix: '/ja' },
+]
 const OUT_DIR = join(here, '../src/generated')
 const OUT_FILE = join(OUT_DIR, 'search-index.json')
 
@@ -17,8 +22,8 @@ function walk(dir: string): string[] {
   return out
 }
 
-function slugFor(file: string): string {
-  let rel = relative(DOCS_DIR, file).replace(/\\/g, '/').replace(/\.mdx$/, '')
+function slugFor(dir: string, file: string): string {
+  let rel = relative(dir, file).replace(/\\/g, '/').replace(/\.mdx$/, '')
   if (rel === 'index') rel = ''
   else if (rel.endsWith('/index')) rel = rel.slice(0, -'/index'.length)
   return rel
@@ -34,14 +39,15 @@ function parseFrontmatter(raw: string): { title?: string; description?: string; 
   return { title, description, body }
 }
 
-const files = walk(DOCS_DIR)
-const indexes = files.map((file) => {
-  const raw = readFileSync(file, 'utf8')
-  const { title, description, body } = parseFrontmatter(raw)
-  const slug = slugFor(file)
-  const url = slug ? `/docs/${slug}` : '/docs'
-  return { title: title ?? url, description, content: body, url }
-})
+const indexes = LOCALES.flatMap(({ locale, dir, prefix }) =>
+  walk(dir).map((file) => {
+    const raw = readFileSync(file, 'utf8')
+    const { title, description, body } = parseFrontmatter(raw)
+    const slug = slugFor(dir, file)
+    const url = slug ? `${prefix}/docs/${slug}` : `${prefix}/docs`
+    return { title: title ?? url, description, content: body, url, locale }
+  }),
+)
 
 mkdirSync(OUT_DIR, { recursive: true })
 writeFileSync(OUT_FILE, JSON.stringify(indexes))
