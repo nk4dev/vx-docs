@@ -1,0 +1,128 @@
+---
+title: テスト中の機能
+description: features-preview ブランチでテスト中の機能。公開済みの vx3 にはまだ含まれていません。
+---
+
+# テスト中の機能
+
+このページの機能はまだテスト中です。[`features-preview`](https://github.com/nk4dev/vx/tree/features-preview) ブランチにあり、**npm の `vx3` パッケージには含まれていません**。このドキュメントのほかのページは、公開済みのリリースについて説明しています。フラグ、デフォルト値、戻り値はリリースまでに変わる可能性があります。
+
+## プレビュー版を試す
+
+```bash
+git clone https://github.com/nk4dev/vx
+cd vx
+git switch features-preview
+bun i
+bun run build
+bun link        # このビルドの `vx3` バイナリをグローバルに公開
+```
+
+## 1 コマンドで NFT をミント — `vx3 mint nft`
+
+公開済みの [`vx3 nft mint`](/ja/docs/commands/nft) には、デプロイ済みのコントラクト、RPC、秘密鍵が必要です。プレビュー版ではそのすべてにデフォルトがあるため、ローカルの開発チェーンではこれだけでミントできます。
+
+```bash
+npx hardhat node     # 任意のローカル開発チェーン
+
+vx3 mint nft         # 初回にコレクションをデプロイし、#1 を自分宛てにミント
+```
+
+```text
+Deployed collection "VX Collection" (VXC) at 0x5FbDB2315678afecb367f032d93F642f64180aa3
+Saved to vx.nft.json — the next "vx3 mint nft" reuses it.
+Minted NFT #1
+  contract  0x5FbDB2315678afecb367f032d93F642f64180aa3
+  owner     0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+  tx        0x883e…8ebf (block 2)
+  network   chain 31337 via http://localhost:8545
+```
+
+そのほかの例:
+
+```bash
+vx3 mint nft --name "My NFT" --image https://example.com/a.png
+vx3 mint nft --to 0xRecipientAddress --uri ipfs://...
+vx3 mint nft 0xExistingContract --uri ipfs://...     # 自分の ERC-721
+```
+
+`vx3 nft mint` も同じコマンドで、こちらでもコントラクトアドレスを省略できます。
+
+### 自動で補われるもの
+
+| 必要なもの | 解決される順番 |
+| --- | --- |
+| RPC | `--rpc`、次に `vx.config.json`、次に `http://localhost:8545` |
+| 署名者 | `--key`、次に `PRIVATE_KEY`（環境変数、次に `./.env`）、次に（ローカル開発チェーンに限り）ノードの最初のアカウント |
+| コントラクト | アドレスの引数、次に `vx.nft.json`（チェーン ID ごとに 1 件）、次に新しくデプロイしたコレクション |
+
+ローカル開発チェーンとは、チェーン ID が `31337`（Hardhat、Anvil）または `1337`（Ganache、`geth --dev`）のチェーンです。それ以外のチェーンでは何も暗黙に行いません。ノードのアカウントは使われず、コレクションは `--deploy` を渡したときだけデプロイされます（ガス代がかかります）。
+
+### オプション
+
+| フラグ | 説明 |
+| --- | --- |
+| `--to <address>` | 受取人。デフォルトは署名者。 |
+| `--uri <tokenURI>` | メタデータの URI（`ipfs://...`、`https://...`）。 |
+| `--name`、`--description`、`--image <url>` | メタデータの項目。`data:application/json;base64,...` 形式のトークン URI に埋め込まれます。`--uri` とは併用できません。IPFS へのアップロードは行いません。 |
+| `--id <tokenId>` | トークン ID。`mint(address,uint256)` 形式のコントラクト向け。 |
+| `--fn <functionName>` | 独自コントラクトで呼び出すミント関数。 |
+| `--deploy` | ミントの前に新しいコレクションをデプロイします。コントラクトアドレスとは併用できません。 |
+| `--collection-name`、`--collection-symbol` | 新しくデプロイするコレクションの名前とシンボル（デフォルトは `VX Collection` / `VXC`）。 |
+| `-r`、`--rpc <url>` | RPC の URL。 |
+| `-k`、`--key <privateKey>` | 署名用の鍵。`PRIVATE_KEY` の利用を推奨します。 |
+| `--json` | JSON オブジェクトを 1 つ出力します: `txHash`、`blockNumber`、`tokenId`、`contractAddress`、`to`、`tokenURI`、`chainId`、`rpcUrl`、`deployed`（または `{ "error" }`）。 |
+
+### 同梱のコレクション
+
+コントラクトを指定しない場合、`vx3` は `VXCollection` をデプロイします。これはメタデータ対応の、外部依存のない ERC-721 です。ミントできるのはデプロイした人だけで、トークン ID は 1 から始まります。監査は受けていないので、重要な場所にデプロイする前に `contracts/VXCollection.sol` を確認してください。
+
+自分のコントラクトアドレスを指定した場合、ミント関数は公開済みのコマンドと同じように選ばれます（`--uri` → `safeMint(address,string)`、`--id` → `mint(address,uint256)`）。そのため、この場合はどちらか一方が引き続き必要です。
+
+### 公開済みのコマンドからの挙動の変更
+
+- 未知のオプションや余分な引数は、無視されずエラーになります。
+- RPC の URL で何も応答しない場合、再試行を続けずに、ヒント付きですぐに失敗します。
+- ミントが revert した場合は、理由だけを表示します。例: `Mint failed: VXCollection: caller is not the owner`
+- `PRIVATE_KEY` は `./.env` からも読み込まれます（`vx3 pay` は従来どおり環境変数のみです）。
+
+## SDK: `quickMint()`、`deployNFT()`、`buildTokenURI()`
+
+`quickMint()` は `vx3 mint nft` が実行している関数で、デフォルトも同じです。
+
+```ts
+import { quickMint } from 'vx3';
+
+const { tokenId, contractAddress, txHash, deployed } = await quickMint({
+  metadata: { name: 'My NFT', image: 'https://example.com/a.png' },
+});
+```
+
+| オプション | 型 | 説明 |
+| --- | --- | --- |
+| `contractAddress` | `string` | 既存の ERC-721。省略すると、プロジェクトのコレクションを使用（なければデプロイ）します。 |
+| `to` | `string` | 受取人。デフォルトは署名者。 |
+| `tokenURI` | `string` | メタデータの URI。 |
+| `metadata` | `{ name?, description?, image? }` | `tokenURI` を指定しない場合に、`data:` URI として埋め込まれます。 |
+| `tokenId`、`functionName`、`abi` | | [`mintNFT()`](/ja/docs/api/nft-minting) と同じ。 |
+| `rpcUrl`、`privateKey` | `string` | 上の表のデフォルトを上書きします。 |
+| `deploy` | `boolean` | 新しいコレクションをデプロイします。ローカル開発チェーン以外で、プロジェクトにコレクションがない場合は必須です。 |
+| `collectionName`、`collectionSymbol` | `string` | 新しくデプロイするコレクション向け。 |
+| `cwd` | `string` | `vx.config.json`、`vx.nft.json`、`.env` があるディレクトリ。デフォルトはカレントディレクトリ。 |
+
+Promise は、[`mintNFT()`](/ja/docs/api/nft-minting) の結果に `contractAddress`、`tokenURI`、`rpcUrl`、`chainId` と、この呼び出しでコレクションをデプロイした場合の `deployed` を加えたもので解決されます。
+
+それぞれの部品も個別にエクスポートされています。
+
+- `deployNFT({ rpcUrl, privateKey, name?, symbol? })` は同梱のコレクションをデプロイし、`{ contractAddress, txHash, name, symbol }` で解決されます。
+- `buildTokenURI({ name?, description?, image? })` は `data:` URI を返します。
+- `mintNFT()` は `privateKey` の代わりに `signer` を受け取れるようになり、結果に `to` と `tokenId`（ERC-721 の `Transfer` イベントから取得）が加わります。
+
+## フィードバック
+
+テスト中の機能の問題は [github.com/nk4dev/vx/issues](https://github.com/nk4dev/vx/issues) に報告し、`features-preview` ブランチであることを書き添えてください。
+
+## 関連項目
+
+- [`vx3 nft mint`](/ja/docs/commands/nft) — 公開済みのコマンド。
+- [プログラムから NFT をミントする](/ja/docs/api/nft-minting) — 公開済みの `mintNFT()`。

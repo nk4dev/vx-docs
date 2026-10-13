@@ -47,6 +47,7 @@ const tree: (PageDef | FolderDef)[] = [
       { name: { en: 'React components & hooks', ja: 'React コンポーネントとフック' }, url: '/docs/api/react-components' },
     ],
   },
+  { name: { en: 'Preview features', ja: 'テスト中の機能' }, url: '/docs/preview' },
 ]
 
 function buildPageTree(locale: Locale): PageTree.Root {

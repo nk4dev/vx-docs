@@ -1,0 +1,128 @@
+---
+title: Preview features
+description: Features under test on the features-preview branch — not yet in a published vx3 release.
+---
+
+# Preview features
+
+The features on this page are still being tested. They live on the [`features-preview`](https://github.com/nk4dev/vx/tree/features-preview) branch and are **not in the `vx3` package on npm** — the rest of these docs describes the published release. Flags, defaults and return values may change before release.
+
+## Trying the preview build
+
+```bash
+git clone https://github.com/nk4dev/vx
+cd vx
+git switch features-preview
+bun i
+bun run build
+bun link        # exposes this build's `vx3` binary globally
+```
+
+## One-step NFT minting — `vx3 mint nft`
+
+The released [`vx3 nft mint`](/docs/commands/nft) needs a deployed contract, an RPC and a private key. In the preview, every one of those has a default, so on a local dev chain this is the whole flow:
+
+```bash
+npx hardhat node     # any local dev chain
+
+vx3 mint nft         # deploys a collection on first use, mints #1 to you
+```
+
+```text
+Deployed collection "VX Collection" (VXC) at 0x5FbDB2315678afecb367f032d93F642f64180aa3
+Saved to vx.nft.json — the next "vx3 mint nft" reuses it.
+Minted NFT #1
+  contract  0x5FbDB2315678afecb367f032d93F642f64180aa3
+  owner     0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+  tx        0x883e…8ebf (block 2)
+  network   chain 31337 via http://localhost:8545
+```
+
+More examples:
+
+```bash
+vx3 mint nft --name "My NFT" --image https://example.com/a.png
+vx3 mint nft --to 0xRecipientAddress --uri ipfs://...
+vx3 mint nft 0xExistingContract --uri ipfs://...     # your own ERC-721
+```
+
+`vx3 nft mint` is the same command, and the contract address is now optional there too.
+
+### What gets filled in
+
+| Needed | Resolved from, in order |
+| --- | --- |
+| RPC | `--rpc`, then `vx.config.json`, then `http://localhost:8545` |
+| Signer | `--key`, then `PRIVATE_KEY` (environment, then `./.env`), then — on a local dev chain only — the node's first account |
+| Contract | the address argument, then `vx.nft.json` (one entry per chain ID), then a newly deployed collection |
+
+A local dev chain means chain ID `31337` (Hardhat, Anvil) or `1337` (Ganache, `geth --dev`). On any other chain nothing is implicit: the node's account is never used, and a collection is only deployed when you pass `--deploy`, which costs gas.
+
+### Options
+
+| Flag | Description |
+| --- | --- |
+| `--to <address>` | Recipient. Defaults to the signer. |
+| `--uri <tokenURI>` | Metadata URI (`ipfs://...`, `https://...`). |
+| `--name`, `--description`, `--image <url>` | Metadata fields, inlined into a `data:application/json;base64,...` token URI. Cannot be combined with `--uri`. Nothing is uploaded to IPFS. |
+| `--id <tokenId>` | Token ID, for `mint(address,uint256)` contracts. |
+| `--fn <functionName>` | Mint function to call on a custom contract. |
+| `--deploy` | Deploy a new collection before minting. Cannot be combined with a contract address. |
+| `--collection-name`, `--collection-symbol` | Name and symbol for a newly deployed collection (default `VX Collection` / `VXC`). |
+| `-r`, `--rpc <url>` | RPC URL. |
+| `-k`, `--key <privateKey>` | Signing key. Prefer `PRIVATE_KEY`. |
+| `--json` | Print one JSON object: `txHash`, `blockNumber`, `tokenId`, `contractAddress`, `to`, `tokenURI`, `chainId`, `rpcUrl`, `deployed` (or `{ "error" }`). |
+
+### The bundled collection
+
+When no contract is given, `vx3` deploys `VXCollection`, a self-contained ERC-721 with metadata. Only the deployer can mint, and token IDs start at 1. It has not been audited — read `contracts/VXCollection.sol` before deploying it anywhere that matters.
+
+With your own contract address the mint function is chosen as in the released command (`--uri` → `safeMint(address,string)`, `--id` → `mint(address,uint256)`), so one of them is still required there.
+
+### Behavior changes from the released command
+
+- An unknown option or an extra argument is an error instead of being ignored.
+- If nothing answers at the RPC URL, the command fails immediately with a hint instead of retrying.
+- A reverted mint prints only the revert reason, e.g. `Mint failed: VXCollection: caller is not the owner`.
+- `PRIVATE_KEY` is also read from `./.env`. (`vx3 pay` still reads the environment only.)
+
+## SDK: `quickMint()`, `deployNFT()`, `buildTokenURI()`
+
+`quickMint()` is what `vx3 mint nft` runs, with the same defaults:
+
+```ts
+import { quickMint } from 'vx3';
+
+const { tokenId, contractAddress, txHash, deployed } = await quickMint({
+  metadata: { name: 'My NFT', image: 'https://example.com/a.png' },
+});
+```
+
+| Option | Type | Description |
+| --- | --- | --- |
+| `contractAddress` | `string` | Existing ERC-721. Omit to use, or deploy, the project's collection. |
+| `to` | `string` | Recipient. Defaults to the signer. |
+| `tokenURI` | `string` | Metadata URI. |
+| `metadata` | `{ name?, description?, image? }` | Inlined as a `data:` URI when `tokenURI` is not given. |
+| `tokenId`, `functionName`, `abi` | | As in [`mintNFT()`](/docs/api/nft-minting). |
+| `rpcUrl`, `privateKey` | `string` | Override the defaults in the table above. |
+| `deploy` | `boolean` | Deploy a new collection. Required off a local dev chain when the project has none. |
+| `collectionName`, `collectionSymbol` | `string` | For a newly deployed collection. |
+| `cwd` | `string` | Directory holding `vx.config.json`, `vx.nft.json` and `.env`. Defaults to the current directory. |
+
+It resolves with the [`mintNFT()`](/docs/api/nft-minting) result plus `contractAddress`, `tokenURI`, `rpcUrl`, `chainId`, and `deployed` when this call deployed a collection.
+
+The pieces are exported separately:
+
+- `deployNFT({ rpcUrl, privateKey, name?, symbol? })` deploys the bundled collection and resolves with `{ contractAddress, txHash, name, symbol }`.
+- `buildTokenURI({ name?, description?, image? })` returns the `data:` URI.
+- `mintNFT()` accepts a `signer` in place of `privateKey`, and its result gains `to` and `tokenId` (read from the ERC-721 `Transfer` event).
+
+## Feedback
+
+Report problems with preview features at [github.com/nk4dev/vx/issues](https://github.com/nk4dev/vx/issues), and mention the `features-preview` branch.
+
+## See also
+
+- [`vx3 nft mint`](/docs/commands/nft) — the released command.
+- [Minting NFTs programmatically](/docs/api/nft-minting) — the released `mintNFT()`.
